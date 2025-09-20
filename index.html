@@ -117,7 +117,6 @@
         .btn { transition: transform 0.1s ease, background-color 0.2s; }
         .btn:active { transform: scale(0.95); }
         
-        /* Tutorial Styles */
         #tutorial-overlay {
             position: fixed;
             inset: 0;
@@ -133,22 +132,39 @@
         }
         #tutorial-box {
             position: absolute;
-            background: #312e81; /* Indigo-800 */
+            background: #312e81;
             color: white;
             padding: 1.5rem;
             border-radius: 1.5rem;
-            border: 2px solid #4f46e5; /* Indigo-600 */
+            border: 2px solid #4f46e5;
             max-width: 350px;
             z-index: 1001;
             transition: all 0.5s ease-in-out;
+        }
+        .slide-toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .performance-bar {
+            background-color: #374151; /* gray-700 */
+            border-radius: 9999px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .performance-bar-inner {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
     </style>
 </head>
 <body class="bg-indigo-900 text-white">
 
     <!-- Global Banner -->
-    <div class="fixed top-0 left-0 right-0 bg-indigo-900/80 backdrop-blur-sm p-3 text-center z-50 border-b border-indigo-700">
-        <h3 class="text-sm font-semibold tracking-wider text-indigo-300 mb-2">GLOBAL YIELD (ALL TRAINERS)</h3>
+    <div id="global-banner" class="fixed top-0 left-0 right-0 bg-indigo-900/80 backdrop-blur-sm p-3 text-center z-50 border-b border-indigo-700">
+        <h3 class="text-sm font-semibold tracking-wider text-indigo-300 mb-2">TOTAL $ PUMPED BY PLAYERS</h3>
         <div class="flex justify-center items-center space-x-4 md:space-x-8 text-xs md:text-sm">
             <div><span class="font-bold text-red-400">RED:</span> $<span id="global-red">10000</span></div>
             <div><span class="font-bold text-blue-400">BLUE:</span> $<span id="global-blue">5000</span></div>
@@ -162,6 +178,11 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
     </button>
     
+    <!-- Help Button -->
+     <button id="help-btn" class="fixed top-20 right-4 z-50 bg-amber-500 hover:bg-amber-600 p-3 rounded-full shadow-lg transition hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </button>
+
     <!-- Main Menu Screen -->
     <div id="main-menu" class="screen active-screen flex-col justify-center items-center p-4 text-center">
         <h1 class="text-6xl md:text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-blue-400 to-green-400">Pop Logic</h1>
@@ -196,7 +217,7 @@
     <div id="level-1" class="screen flex-col justify-center items-center p-4">
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
             <div id="l1-game-area" class="flex-grow lg:w-3/5 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center justify-between">
-                <div id="l1-history-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 w-full mb-4">
+                 <div id="l1-history-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 w-full mb-4">
                     <h3 class="text-lg font-bold mb-2 text-center text-indigo-200">Last 8 Balloons</h3>
                     <div id="l1-history" class="grid grid-cols-8 gap-x-2 justify-items-center text-center text-sm h-16 items-center"></div>
                 </div>
@@ -205,36 +226,41 @@
                     <h2 id="l1-progress" class="text-2xl font-bold">Balloon 1 of 15</h2>
                 </div>
                 <div id="l1-balloon-area" class="w-full h-64 flex justify-center items-center my-4 relative"></div>
-                <div class="w-full flex flex-col md:flex-row gap-4">
-                    <button id="l1-pump-btn" class="btn bg-green-500 hover:bg-green-600 flex-1 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">PUMP (+1)</button>
-                    <button id="l1-bank-btn" class="btn bg-blue-500 hover:bg-blue-600 flex-1 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">BANK PROFIT ($<span id="l1-current-yield">0</span>)</button>
+                <div id="l1-controls" class="w-full">
+                    <div class="w-full flex flex-col md:flex-row gap-4">
+                        <button id="l1-pump-btn" class="btn bg-green-500 hover:bg-green-600 flex-1 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">PUMP (+1)</button>
+                        <button id="l1-bank-btn" class="btn bg-blue-500 hover:bg-blue-600 flex-1 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">CASH OUT ($<span id="l1-current-score">0</span>)</button>
+                    </div>
+                </div>
+                 <div id="l1-summary-area" class="w-full text-center hidden mt-4">
+                    <div id="l1-score-summary" class="mb-6"></div>
+                    <div id="l1-educational-slides" class="bg-indigo-900/50 p-6 rounded-2xl">
+                         <div id="slide-content" class="min-h-[150px]"></div>
+                         <div class="flex justify-between items-center mt-4">
+                             <button id="prev-slide-btn" class="btn bg-gray-500 hover:bg-gray-600 font-bold py-2 px-6 rounded-lg">Prev</button>
+                             <span id="slide-indicator" class="font-mono text-sm">1 / 3</span>
+                             <button id="next-slide-btn" class="btn bg-indigo-500 hover:bg-indigo-600 font-bold py-2 px-6 rounded-lg">Next</button>
+                         </div>
+                    </div>
+                    <div class="flex gap-4 justify-center mt-6">
+                         <button id="l1-summary-next-btn" class="btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Go to Level 2</button>
+                         <button id="l1-summary-replay-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Replay</button>
+                    </div>
                 </div>
             </div>
             <div class="lg:w-2/5 flex flex-col gap-8">
                 <div id="l1-data-panel" class="bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700">
                     <h3 class="text-xl font-bold mb-4 text-center">Your Personal Data</h3>
                     <div class="space-y-4">
-                        <div class="flex justify-between items-baseline"><span class="font-bold text-red-400 text-lg">Red Yield:</span><div class="text-right"><span id="l1-red-yield" class="text-xl font-mono">0</span><span class="text-sm text-gray-400 block">Avg: <span id="l1-red-avg">0.0</span></span></div></div>
-                        <div class="flex justify-between items-baseline"><span class="font-bold text-blue-400 text-lg">Blue Yield:</span><div class="text-right"><span id="l1-blue-yield" class="text-xl font-mono">0</span><span class="text-sm text-gray-400 block">Avg: <span id="l1-blue-avg">0.0</span></span></div></div>
-                        <div class="flex justify-between items-baseline"><span class="font-bold text-green-400 text-lg">Green Yield:</span><div class="text-right"><span id="l1-green-yield" class="text-xl font-mono">0</span><span class="text-sm text-gray-400 block">Avg: <span id="l1-green-avg">0.0</span></span></div></div>
+                        <div class="flex justify-between items-baseline"><span class="font-bold text-red-400 text-lg">Red:</span><div class="text-right"><span id="l1-red-score" class="text-xl font-mono">$0</span><span class="text-sm text-gray-400 block">Avg. Pumps: <span id="l1-red-avg">0.0</span></span></div></div>
+                        <div class="flex justify-between items-baseline"><span class="font-bold text-blue-400 text-lg">Blue:</span><div class="text-right"><span id="l1-blue-score" class="text-xl font-mono">$0</span><span class="text-sm text-gray-400 block">Avg. Pumps: <span id="l1-blue-avg">0.0</span></span></div></div>
+                        <div class="flex justify-between items-baseline"><span class="font-bold text-green-400 text-lg">Green:</span><div class="text-right"><span id="l1-green-score" class="text-xl font-mono">$0</span><span class="text-sm text-gray-400 block">Avg. Pumps: <span id="l1-green-avg">0.0</span></span></div></div>
                     </div>
                 </div>
                 <div class="bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700">
-                     <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
-                     <p id="l1-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
+                     <h3 id="l1-insights-title" class="text-xl font-bold mb-2 text-center">AI Insights</h3>
+                     <div id="l1-insights" class="text-center text-indigo-300 min-h-[6rem] transition-opacity duration-500"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Level Summary Screen -->
-    <div id="level-summary" class="screen flex-col justify-center items-center p-4">
-        <div class="text-center">
-            <h1 id="summary-title" class="text-5xl font-bold">Level Complete!</h1>
-            <p id="summary-text" class="max-w-2xl text-indigo-200 mt-4 mb-8"></p>
-            <div class="flex gap-4 justify-center">
-                <button id="summary-next-btn" class="btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Next Level</button>
-                <button id="summary-replay-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Replay</button>
             </div>
         </div>
     </div>
@@ -253,6 +279,14 @@
                 <div class="mt-6">
                     <button id="l2-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">START SIMULATION</button>
                 </div>
+                <div id="l2-summary-area" class="w-full text-center hidden mt-auto pt-6">
+                    <h3 class="text-2xl font-bold text-green-400">Simulation Complete!</h3>
+                    <p class="text-indigo-200 my-4 max-w-xl mx-auto">By pausing and adjusting your AI, you acted as a Human-in-the-Loop. This is vital for safety and performance.</p>
+                    <div class="flex gap-4 justify-center">
+                         <button id="l2-summary-next-btn" class="btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Open Game Mode</button>
+                         <button id="l2-summary-replay-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Replay</button>
+                    </div>
+                </div>
                 <div class="mt-auto pt-6">
                     <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
                     <p id="l2-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
@@ -264,13 +298,10 @@
                 <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700">
                     <div id="l2-conveyor" class="absolute h-full w-full"></div>
                 </div>
-                <div class="w-full mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-red-400">Red Yield</p><p id="l2-red-yield" class="text-2xl font-mono">0</p><p id="l2-red-pop" class="text-xs text-indigo-300">0% pop</p></div>
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-blue-400">Blue Yield</p><p id="l2-blue-yield" class="text-2xl font-mono">0</p><p id="l2-blue-pop" class="text-xs text-indigo-300">0% pop</p></div>
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-green-400">Green Yield</p><p id="l2-green-yield" class="text-2xl font-mono">0</p><p id="l2-green-pop" class="text-xs text-indigo-300">0% pop</p></div>
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-yellow-400">Yellow Yield</p><p id="l2-yellow-yield" class="text-2xl font-mono">0</p><p id="l2-yellow-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                <div class="mt-6 w-full bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700">
+                    <h3 class="text-xl font-bold text-center mb-4">AI Performance Monitor</h3>
+                    <div id="l2-performance-monitor" class="space-y-4"></div>
                 </div>
-                <div class="mt-4 w-full bg-indigo-700/50 p-3 rounded-2xl text-center"><h4 class="font-bold text-indigo-200">Yield Trend</h4><div class="h-32 w-full mt-2"><canvas id="l2-chart"></canvas></div></div>
             </div>
         </div>
     </div>
@@ -295,15 +326,12 @@
             </div>
             <div class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center">
                 <h3 class="text-xl font-bold mb-2">Open Game Mode</h3>
-                <p class="text-sm text-indigo-300 mb-4">Total Yield: $<span id="l3-total-yield">0</span></p>
+                <p class="text-sm text-indigo-300 mb-4">Total Score: $<span id="l3-total-score">0</span></p>
                 <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700"><div id="l3-conveyor" class="absolute h-full w-full"></div></div>
-                <div class="w-full mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-red-400">Red Yield</p><p id="l3-red-yield" class="text-2xl font-mono">0</p><p id="l3-red-pop" class="text-xs text-indigo-300">0% pop</p></div>
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-blue-400">Blue Yield</p><p id="l3-blue-yield" class="text-2xl font-mono">0</p><p id="l3-blue-pop" class="text-xs text-indigo-300">0% pop</p></div>
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-green-400">Green Yield</p><p id="l3-green-yield" class="text-2xl font-mono">0</p><p id="l3-green-pop" class="text-xs text-indigo-300">0% pop</p></div>
-                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-yellow-400">Yellow Yield</p><p id="l3-yellow-yield" class="text-2xl font-mono">0</p><p id="l3-yellow-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                <div class="mt-6 w-full bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700">
+                    <h3 class="text-xl font-bold text-center mb-4">AI Performance Monitor</h3>
+                    <div id="l3-performance-monitor" class="space-y-4"></div>
                 </div>
-                <div class="mt-4 w-full bg-indigo-700/50 p-3 rounded-2xl text-center"><h4 class="font-bold text-indigo-200">Yield Trend</h4><div class="h-32 w-full mt-2"><canvas id="l3-chart"></canvas></div></div>
             </div>
         </div>
     </div>
@@ -314,7 +342,10 @@
         <div id="tutorial-box" class="shadow-2xl">
             <h3 id="tutorial-title" class="text-xl font-bold mb-2"></h3>
             <p id="tutorial-text" class="text-indigo-200 mb-4"></p>
-            <button id="tutorial-next-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full font-bold py-2 px-4 rounded-lg">Got it!</button>
+            <div class="flex gap-2 mt-4">
+                 <button id="tutorial-prev-btn" class="btn bg-gray-500 hover:bg-gray-600 font-bold py-2 px-4 rounded-lg">Previous</button>
+                 <button id="tutorial-next-btn" class="btn bg-indigo-500 hover:bg-indigo-600 flex-grow font-bold py-2 px-4 rounded-lg">Next</button>
+            </div>
         </div>
     </div>
 
@@ -322,11 +353,17 @@
     // --- DOM Elements ---
     const screens = document.querySelectorAll('.screen');
     const homeBtn = document.getElementById('home-btn');
+    const helpBtn = document.getElementById('help-btn');
     const startGameBtn = document.getElementById('start-game-btn');
     const selectL1Btn = document.getElementById('select-l1-btn');
     const selectL2Btn = document.getElementById('select-l2-btn');
     const selectL3Btn = document.getElementById('select-l3-btn');
     const resetProgressBtn = document.getElementById('reset-progress-btn');
+    const tutorialOverlay = document.getElementById('tutorial-overlay');
+    const tutorialBox = document.getElementById('tutorial-box');
+    const tutorialPrevBtn = document.getElementById('tutorial-prev-btn');
+    const tutorialNextBtn = document.getElementById('tutorial-next-btn');
+
 
     // --- Game Config ---
     const BALLOON_CONFIG = {
@@ -344,61 +381,67 @@
     function getDefaultGameState() {
         return {
             unlockedLevels: 1,
-            tutorial: {
-                l1: 0,
-                l2: 0,
-            },
-            l1: { stats: {} },
-            l2: { stats: {} },
-            l3: { stats: {} }
+            tutorial: { l1: 0, l2: 0 },
+            l1: { stats: {}, balloonIndex: 0, history: [], isPopping: false, strategy: {}, bestScore: 0 },
+            l2: { stats: {}, processedCount: 0, strategy: {} },
+            l3: { stats: {}, totalScore: 0, processedSinceChartUpdate: 0, temperature: 20, strategy: {} }
         };
     }
 
     function resetAllProgress() {
         localStorage.removeItem('popLogicState');
-        gameState = getDefaultGameState();
-        resetStats('l1');
-        resetStats('l2');
-        resetStats('l3');
-        selectL2Btn.disabled = true;
-        document.getElementById('l2-lock').style.display = 'inline-block';
-        selectL3Btn.disabled = true;
-        document.getElementById('l3-lock').style.display = 'inline-block';
+        initGame();
         goToLevelSelect();
     }
     
     function saveGameState() {
-        localStorage.setItem('popLogicState', JSON.stringify(gameState));
+        const stateToSave = JSON.parse(JSON.stringify(gameState));
+        if (stateToSave.l2) delete stateToSave.l2.chart;
+        if (stateToSave.l3) delete stateToSave.l3.chart;
+        localStorage.setItem('popLogicState', JSON.stringify(stateToSave));
     }
 
     function loadGameState() {
         const savedState = localStorage.getItem('popLogicState');
         if (savedState) {
             gameState = JSON.parse(savedState);
-             // Ensure new properties exist if loading old save data
             if (!gameState.tutorial) gameState.tutorial = { l1: 0, l2: 0 };
+            if (!gameState.l1.bestScore) gameState.l1.bestScore = 0;
         } else {
             gameState = getDefaultGameState();
         }
     }
+
+    function initGame() {
+        loadGameState();
+        ['l1', 'l2', 'l3'].forEach(level => {
+             if (!gameState[level] || !gameState[level].stats || !gameState[level].stats.red) {
+                resetStats(level);
+             }
+        });
+        if (gameState.l2) gameState.l2.isRunning = false;
+        if (gameState.l3) gameState.l3.isRunning = false;
+    }
     
     function resetStats(level) {
-        const statsTemplate = { yield: 0, pops: 0, count: 0, pumps: 0 };
+        const statsTemplate = { score: 0, pops: 0, count: 0, pumps: 0 };
         gameState[level].stats = {
             red: {...statsTemplate},
             blue: {...statsTemplate},
             green: {...statsTemplate},
             yellow: {...statsTemplate}
         };
+         gameState[level].strategy = {};
         if (level === 'l1') {
              gameState.l1.history = [];
              gameState.l1.balloonIndex = 0;
+             gameState.l1.isPopping = false;
         }
         if (level === 'l2') {
             gameState.l2.processedCount = 0;
         }
          if (level === 'l3') {
-            gameState.l3.totalYield = 0;
+            gameState.l3.totalScore = 0;
             gameState.l3.processedSinceChartUpdate = 0;
             gameState.l3.temperature = 20;
         }
@@ -410,7 +453,9 @@
     const showScreen = (screenId) => {
         screens.forEach(s => s.classList.remove('active-screen'));
         document.getElementById(screenId).classList.add('active-screen');
-        homeBtn.style.display = (screenId === 'main-menu' || screenId === 'level-select') ? 'none' : 'block';
+        const isLevelScreen = screenId.startsWith('level-');
+        homeBtn.style.display = isLevelScreen ? 'block' : 'none';
+        helpBtn.style.display = isLevelScreen ? 'block' : 'none';
     };
 
     // --- Global Banner Update ---
@@ -444,9 +489,7 @@
     }
     
     // --- Tutorial System ---
-    const tutorialOverlay = document.getElementById('tutorial-overlay');
     const tutorialHighlight = document.getElementById('tutorial-highlight');
-    const tutorialBox = document.getElementById('tutorial-box');
 
     function showTutorialStep(steps, level) {
         const stepIndex = gameState.tutorial[level];
@@ -454,17 +497,18 @@
             tutorialOverlay.style.display = 'none';
             return;
         }
+        tutorialOverlay.style.display = 'block';
 
         const step = steps[stepIndex];
         const targetElement = document.querySelector(step.element);
         
         if (!targetElement) {
              gameState.tutorial[level]++;
+             saveGameState();
              showTutorialStep(steps, level);
              return;
         }
 
-        tutorialOverlay.style.display = 'block';
         const rect = targetElement.getBoundingClientRect();
 
         tutorialHighlight.style.left = `${rect.left - 10}px`;
@@ -473,31 +517,41 @@
         tutorialHighlight.style.height = `${rect.height + 20}px`;
 
         document.getElementById('tutorial-title').textContent = step.title;
-        document.getElementById('tutorial-text').innerHTML = step.text;
+        const textContent = typeof step.text === 'function' ? step.text() : step.text;
+        document.getElementById('tutorial-text').innerHTML = textContent;
 
-        const boxTop = rect.bottom + 20;
-        const boxLeft = rect.left + (rect.width / 2) - 175; // 175 is half of box width
+        const boxLeft = rect.left + (rect.width / 2) - 175;
+        let boxTop = rect.bottom + 20;
         
+        if (boxTop + tutorialBox.offsetHeight + 20 > window.innerHeight) {
+            boxTop = rect.top - tutorialBox.offsetHeight - 20;
+        }
+
         tutorialBox.style.top = `${boxTop}px`;
         tutorialBox.style.left = `${Math.max(10, Math.min(window.innerWidth - 360, boxLeft))}px`;
         
-        document.getElementById('tutorial-next-btn').onclick = () => {
-            gameState.tutorial[level]++;
-            saveGameState();
-            showTutorialStep(steps, level);
-        };
+        tutorialPrevBtn.style.display = stepIndex === 0 ? 'none' : 'block';
+        tutorialNextBtn.textContent = stepIndex === steps.length - 1 ? 'Finish' : 'Next';
+    }
+
+    function advanceTutorial(direction, steps, level) {
+         gameState.tutorial[level] += direction;
+         if(gameState.tutorial[level] < 0) gameState.tutorial[level] = 0;
+         saveGameState();
+         showTutorialStep(steps, level);
     }
 
     const L1_TUTORIAL_STEPS = [
-        { element: '#l1-game-area', title: 'Welcome to Training!', text: "Your goal is simple: PUMP the balloon to increase its value, but BANK the profit before it pops!"},
+        { element: '#l1-game-area', title: 'Welcome to Training!', text: "Your goal is simple: PUMP the balloon to increase its value, but CASH OUT the score before it pops!"},
+        { element: '#global-banner', title: 'Global Player Data', text: "Here's what players around the world are earning. This data might offer a clue... or it might show you a biased strategy. An AI must learn to evaluate if external data is useful or misleading. Should you trust it?"},
         { element: '#l1-data-panel', title: 'Your Personal Data', text: "As you play, your results will appear here. This is your AI's 'memory'. Use it to learn the balloon behaviors."},
-        { element: '#l1-data-panel .text-red-400', title: 'Check your Average', text: () => `After a few successful runs, the <strong>Avg. pumps</strong> stat appears. Your current average for Red balloons is <strong>${gameState.l1.stats.red.pumps / gameState.l1.stats.red.count || 0}</strong>. Is this a good number?`},
+        { element: '#l1-data-panel .text-red-400', title: 'Check your Average', text: () => `After a few successful runs, the <strong>Avg. Pumps</strong> stat appears. For example, your current average for Red balloons is <strong>${((gameState.l1.stats.red.pumps / gameState.l1.stats.red.count) || 0).toFixed(1)}</strong>. Is this a reliable strategy?`},
         { element: '#l1-history-panel', title: "AI's Short-Term Memory", text: "This panel shows your last 8 results. Think of this as an AI's <strong>Context Window</strong>. Like this panel, a GenAI model can only 'remember' a limited amount of recent information to make its next decision. Information that scrolls off is forgotten!"},
         { element: '.bg-green-400', title: 'Noisy Data!', text: "Watch out! Green balloons are highly unpredictable. In AI, this is called 'noisy data', and it's very difficult to make accurate predictions from it."},
     ];
      const L2_TUTORIAL_STEPS = [
         { element: '#l2-control-panel', title: 'Build Your AI!', text: "Now you're the teacher. Use the sliders to set rules for your AI based on what you learned in Level 1."},
-        { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the stats and the trend chart to see how it performs."},
+        { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the performance monitor to see how it performs."},
         { element: '#l2-start-stop-btn', title: 'Human-in-the-Loop', text: "Things not going well? You can PAUSE the simulation at any time to adjust your AI's rules. This is your role as a Human Supervisor!"},
     ];
 
@@ -523,20 +577,7 @@
             insightEl.style.opacity = '1';
         }, 300);
     }
-
-    function showSummary(title, text, nextLevelCallback, replayCallback) {
-        showScreen('level-summary');
-        document.getElementById('summary-title').textContent = title;
-        document.getElementById('summary-text').innerHTML = text;
-        document.getElementById('summary-next-btn').onclick = nextLevelCallback;
-        document.getElementById('summary-replay-btn').onclick = replayCallback;
-        if(nextLevelCallback === null) {
-            document.getElementById('summary-next-btn').style.display = 'none';
-        } else {
-            document.getElementById('summary-next-btn').style.display = 'inline-block';
-        }
-    }
-
+    
     // =================================
     // ========= LEVEL 1 LOGIC =========
     // =================================
@@ -545,13 +586,29 @@
     const l1BalloonArea = document.getElementById('l1-balloon-area');
 
     function startLevel1() {
-        if (!gameState.l1.stats.red) resetStats('l1'); // Only reset if no data exists
         showScreen('level-1');
-        setupNextL1Balloon();
-        showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+        document.getElementById('l1-insights-title').textContent = "AI Insights";
+        if (gameState.l1.balloonIndex >= L1_SEQUENCE.length) {
+            endLevel1(true); 
+        } else {
+            document.getElementById('l1-controls').style.display = 'flex';
+            document.getElementById('l1-summary-area').style.display = 'none';
+            l1BalloonArea.style.display = 'flex';
+            document.getElementById('l1-progress').style.display = 'block';
+            setupNextL1Balloon();
+            showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+        }
+    }
+    
+    function replayLevel1() {
+        resetStats('l1');
+        gameState.tutorial.l1 = 0;
+        saveGameState();
+        startLevel1();
     }
 
     function setupNextL1Balloon() {
+        gameState.l1.isPopping = false;
         if (gameState.l1.balloonIndex >= L1_SEQUENCE.length) { endLevel1(); return; }
         const type = L1_SEQUENCE[gameState.l1.balloonIndex];
         gameState.l1.currentBalloon = { type: type, maxPumps: getRandomInt(...BALLOON_CONFIG[type].range), colorClass: BALLOON_CONFIG[type].color };
@@ -559,14 +616,12 @@
         renderL1();
 
         const index = gameState.l1.balloonIndex;
-        if (index === 0) setInsight("Every pump adds to the yield, but also risk. How far will you push it?", 1);
+        if (index === 0) setInsight("Every pump adds to the score, but also risk. How far will you push it?", 1);
         else if (index === 4) setInsight("You've seen a few red balloons now. Have you developed a strategy? 🤔", 1);
         else if (index === 8) setInsight("The data is changing. A good AI must adapt its strategy constantly.", 1);
         else if (index === 12) setInsight("Trusting the global data can be misleading. What does YOUR data tell you?", 1);
         
-        // Trigger tutorial steps
-        if(gameState.tutorial.l1 === 4 && type === 'green') showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
-
+        if(gameState.tutorial.l1 === 5 && type === 'green') showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
     }
     
     function renderL1() {
@@ -574,12 +629,12 @@
         const scale = 1 + currentPumps * 0.08;
         l1BalloonArea.innerHTML = `<div class="balloon bg-${currentBalloon.colorClass}" style="--scale: ${scale}; transform: scale(${scale}); color: var(--tw-bg-${currentBalloon.colorClass})"><div class="balloon-face"><div class="eye left" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="eye right" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="mouth" style="height: ${Math.min(25, 15 + currentPumps * 1.5)}px; border-radius: 0 0 ${Math.min(25, 15 + currentPumps)}px ${Math.min(25, 15 + currentPumps)}px;"></div></div></div>`;
         document.getElementById('l1-progress').textContent = `Balloon ${gameState.l1.balloonIndex + 1} of ${L1_SEQUENCE.length}`;
-        document.getElementById('l1-current-yield').textContent = currentPumps;
+        document.getElementById('l1-current-score').textContent = currentPumps;
         
         Object.keys(gameState.l1.stats).forEach(color => {
-            if (document.getElementById(`l1-${color}-yield`)) {
-                const stat = gameState.l1.stats[color];
-                document.getElementById(`l1-${color}-yield`).textContent = stat.yield;
+            if (document.getElementById(`l1-${color}-score`)) {
+                const stat = gameState.l1.stats[color] || { score: 0, pumps: 0, count: 0};
+                document.getElementById(`l1-${color}-score`).textContent = `$${stat.score}`;
                 const avg = stat.count > 0 ? (stat.pumps / stat.count).toFixed(1) : '0.0';
                 document.getElementById(`l1-${color}-avg`).textContent = avg;
             }
@@ -594,6 +649,7 @@
     }
 
     function handleL1Pump() {
+        if (gameState.l1.isPopping) return;
         const balloonEl = l1BalloonArea.querySelector('.balloon');
         if (balloonEl) { balloonEl.classList.remove('pump-jiggle'); void balloonEl.offsetWidth; balloonEl.classList.add('pump-jiggle'); }
         gameState.l1.currentPumps++;
@@ -601,30 +657,31 @@
     }
 
     function handleL1Bank() {
+        if (gameState.l1.isPopping) return;
         const { type } = gameState.l1.currentBalloon;
         const pumps = gameState.l1.currentPumps;
-        gameState.l1.stats[type].yield += pumps;
+        gameState.l1.stats[type].score += pumps;
         gameState.l1.stats[type].pumps += pumps;
         gameState.l1.stats[type].count++;
         addToL1History(type, pumps, false);
         gameState.l1.balloonIndex++;
+        saveGameState();
         
-        if (gameState.tutorial.l1 === 1) showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
-        if (gameState.tutorial.l1 === 2 && gameState.l1.stats.red.count > 1) {
-            L1_TUTORIAL_STEPS[2].text = `After a few successful runs, the <strong>Avg. pumps</strong> stat appears. Your current average for Red balloons is <strong>${(gameState.l1.stats.red.pumps / gameState.l1.stats.red.count).toFixed(1)}</strong>. Is this a reliable strategy?`;
+        if (gameState.tutorial.l1 <= 2) showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+        if (gameState.tutorial.l1 === 3 && gameState.l1.stats.red.count > 1) {
              showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
         }
-
         setupNextL1Balloon();
     }
     
     function handleL1Pop() {
-        const { type } = gameState.l1.currentBalloon;
-        const pumps = gameState.l1.currentPumps;
+        gameState.l1.isPopping = true;
+        const { type, maxPumps } = gameState.l1.currentBalloon;
         const balloonEl = l1BalloonArea.querySelector('.balloon');
         if (balloonEl) { createExplosion(l1BalloonArea, type); balloonEl.style.display = 'none'; }
         gameState.l1.stats[type].count++;
-        addToL1History(type, pumps, true);
+        addToL1History(type, maxPumps, true);
+        saveGameState();
         setTimeout(() => { gameState.l1.balloonIndex++; setupNextL1Balloon(); }, 500);
     }
 
@@ -632,30 +689,65 @@
         if(!gameState.l1.history) gameState.l1.history = [];
         gameState.l1.history.unshift({ type, pumps, popped });
         if (gameState.l1.history.length > 8) gameState.l1.history.pop();
-        if (gameState.tutorial.l1 === 3) showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+        if (gameState.tutorial.l1 === 4) showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
     }
 
-    function endLevel1() {
-        gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 2);
-        saveGameState();
-        const summaryText = `You discovered that some data (like blue balloons) is predictable, while some (like green) is 'noisy'. This is the first step in training an AI: understanding the data's quality and biases.`;
-        showSummary("Level 1 Complete", summaryText, startLevel2, startLevel1);
+    function endLevel1(isReview = false) {
+        let totalScore = 0;
+        if (!isReview) {
+            gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 2);
+            totalScore = Object.values(gameState.l1.stats).reduce((sum, s) => sum + s.score, 0);
+            if (totalScore > (gameState.l1.bestScore || 0)) {
+                gameState.l1.bestScore = totalScore;
+            }
+            saveGameState();
+        }
+        
+        totalScore = Object.values(gameState.l1.stats).reduce((sum, s) => sum + s.score, 0);
+        const isNewBest = totalScore === gameState.l1.bestScore && !isReview;
+
+        renderL1();
+        l1BalloonArea.style.display = 'none';
+        document.getElementById('l1-progress').style.display = 'none';
+        document.getElementById('l1-controls').style.display = 'none';
+        
+        document.getElementById('l1-score-summary').innerHTML = `
+            <p class="text-2xl font-semibold text-indigo-200">YOU EARNED</p>
+            <p class="text-6xl font-bold text-yellow-300 my-2">$${totalScore}</p>
+            <p class="text-lg font-semibold ${isNewBest ? 'text-green-400' : 'text-indigo-300'}">
+                ${isNewBest ? 'New Best Score!' : `Best Score: $${gameState.l1.bestScore}`}
+            </p>
+        `;
+
+        document.getElementById('l1-summary-area').style.display = 'block';
+        document.getElementById('l1-insights-title').textContent = "Final Data Insights";
+        setInsight(`<div class="text-left text-sm space-y-1">
+                <p><strong><span class="text-red-400">Red:</span></strong> High risk, high reward. A tempting but dangerous choice.</p>
+                <p><strong><span class="text-blue-400">Blue:</span></strong> Very predictable. Low risk, but the profits are smaller.</p>
+                <p><strong><span class="text-green-400">Green:</span></strong> Highly unpredictable 'noisy data'. It's tough to form a reliable strategy here.</p>
+            </div>`, 1);
+        renderEducationalSlides('l1', 0);
     }
     
-    // --- Chart Logic ---
-    function initChart(canvasId, levelState) {
-        if (levelState.chart) levelState.chart.destroy();
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        levelState.chart = new Chart(ctx, { type: 'line', data: { labels: [], datasets: Object.keys(BALLOON_CONFIG).map(color => ({ label: color.charAt(0).toUpperCase() + color.slice(1), data: [], borderColor: BALLOON_CONFIG[color].chartColor, tension: 0.1, fill: false, borderWidth: 2 }))}, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: '#a5b4fc' }, grid: { color: 'rgba(99, 102, 241, 0.2)' } }, y: { ticks: { color: '#a5b4fc' }, grid: { color: 'rgba(99, 102, 241, 0.2)' }, beginAtZero: true } }, plugins: { legend: { labels: { color: '#e0e7ff' } } } }});
-    }
-
-    function updateChart(levelState) {
-        const chart = levelState.chart; if (!chart) return;
-        const label = levelState.processedCount ?? levelState.processedSinceChartUpdate;
-        chart.data.labels.push(label);
-        Object.keys(BALLOON_CONFIG).forEach((color, index) => { chart.data.datasets[index].data.push(levelState.stats[color].yield); });
-        if (chart.data.labels.length > 10) { chart.data.labels.shift(); chart.data.datasets.forEach(ds => ds.data.shift()); }
-        chart.update();
+    // --- Educational Slides ---
+    const EDUCATIONAL_SLIDES = {
+        l1: [
+            { title: "You Are The AI!", text: "You just performed <strong>Pattern Recognition</strong>. By observing data (balloons popping), your brain created a mental model to predict future outcomes. This is the fundamental concept behind most AI systems!" },
+            { title: "Beware of Bias!", text: "Did the first four Red balloons make you feel overconfident? This is a form of <strong>Selection Bias</strong>, where early data skews your model. An AI trained only on this data might make dangerously risky decisions." },
+            { title: "Handling 'Noisy' Data", text: "Green balloons were chaotic, right? This represents <strong>'Noisy Data'</strong> in AI. It's difficult to find a reliable pattern in noisy data, which can lead to poor predictions and overfitting." }
+        ]
+    };
+    
+    let currentSlideIndex = 0;
+    function renderEducationalSlides(level, index) {
+        currentSlideIndex = index;
+        const slides = EDUCATIONAL_SLIDES[level];
+        const slide = slides[index];
+        const contentEl = document.getElementById('slide-content');
+        contentEl.innerHTML = `<h3 class="text-2xl font-bold mb-2">${slide.title}</h3><p class="text-indigo-200">${slide.text}</p>`;
+        document.getElementById('slide-indicator').textContent = `${index + 1} / ${slides.length}`;
+        document.getElementById('prev-slide-btn').disabled = index === 0;
+        document.getElementById('next-slide-btn').disabled = index === slides.length - 1;
     }
     
     // =================================
@@ -665,14 +757,71 @@
     const conveyor2 = document.getElementById('l2-conveyor');
 
     function startLevel2() {
-        if (!gameState.l2.stats.red) resetStats('l2');
         showScreen('level-2');
-        initChart('l2-chart', gameState.l2);
-        updateL2Stats();
-        setInsight("Set your AI's rules based on what you learned. Is your model ready for unseen 'yellow' data?", 2);
-        showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
+        if (gameState.l2.processedCount >= 100) {
+            endLevel2(true);
+        } else {
+            document.getElementById('l2-summary-area').style.display = 'none';
+            document.getElementById('l2-start-stop-btn').style.display = 'block';
+            buildPerformanceMonitor('l2');
+            updateL2Stats();
+            setInsight("Set your AI's rules based on what you learned. Is your model ready for unseen 'yellow' data?", 2);
+            showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
+        }
     }
     
+    function replayLevel2() {
+        resetStats('l2');
+        gameState.tutorial.l2 = 0;
+        saveGameState();
+        startLevel2();
+    }
+    
+    function buildPerformanceMonitor(level) {
+        const monitorEl = document.getElementById(`${level}-performance-monitor`);
+        if(!monitorEl) return;
+        monitorEl.innerHTML = Object.keys(BALLOON_CONFIG).map(color => `
+            <div>
+                <div class="flex justify-between items-baseline mb-1">
+                    <span class="font-bold text-${BALLOON_CONFIG[color].color}">${color.charAt(0).toUpperCase() + color.slice(1)}</span>
+                    <div class="text-right">
+                        <span id="${level}-${color}-avg-score" class="font-mono text-lg">$0.0</span>
+                        <span class="text-xs text-indigo-300 block">Avg. Score</span>
+                    </div>
+                    <div class="text-right">
+                        <span id="${level}-${color}-pop-rate" class="font-mono text-lg">0%</span>
+                         <span class="text-xs text-indigo-300 block">Pop Rate</span>
+                    </div>
+                </div>
+                <div class="performance-bar"><div id="${level}-${color}-perf-bar" class="performance-bar-inner"></div></div>
+            </div>
+        `).join('');
+    }
+
+    function updatePerformanceMonitor(level) {
+         Object.keys(BALLOON_CONFIG).forEach(color => {
+            const stats = gameState[level].stats[color];
+            const avgScore = stats.count > 0 ? (stats.score / stats.count) : 0;
+            const popRate = stats.count > 0 ? (stats.pops / stats.count) * 100 : 0;
+            
+            document.getElementById(`${level}-${color}-avg-score`).textContent = `$${avgScore.toFixed(1)}`;
+            document.getElementById(`${level}-${color}-pop-rate`).textContent = `${popRate.toFixed(0)}%`;
+            
+            const bar = document.getElementById(`${level}-${color}-perf-bar`);
+            const maxAvg = BALLOON_CONFIG[color].range[1];
+            const perfPercent = Math.min(100, (avgScore / maxAvg) * 100);
+
+            bar.style.width = `${perfPercent}%`;
+            if (popRate > 50 || avgScore < 1) {
+                bar.className = 'performance-bar-inner bg-red-500';
+            } else if (popRate > 25) {
+                bar.className = 'performance-bar-inner bg-yellow-500';
+            } else {
+                 bar.className = 'performance-bar-inner bg-green-500';
+            }
+         });
+    }
+
     function setupL2Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l2-${color}-pumps`); const valSpan = document.getElementById(`l2-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; if (!gameState.l2.isRunning) updateL2Strategy(); }); }); }
     function updateL2Strategy() { ['red', 'blue', 'green', 'yellow'].forEach(color => { gameState.l2.strategy[color] = parseInt(document.getElementById(`l2-${color}-pumps`).value); }); }
 
@@ -703,8 +852,8 @@
             const config = BALLOON_CONFIG[type];
             const maxPumps = getRandomInt(...config.range);
             const strategyPumps = gameState.l2.strategy[type];
-            let yieldVal = 0;
-            if (strategyPumps > maxPumps) { gameState.l2.stats[type].pops++; } else { yieldVal = strategyPumps; gameState.l2.stats[type].yield += yieldVal; }
+            let scoreVal = 0;
+            if (strategyPumps > maxPumps) { gameState.l2.stats[type].pops++; } else { scoreVal = strategyPumps; gameState.l2.stats[type].score += scoreVal; }
             gameState.l2.stats[type].count++; gameState.l2.processedCount++;
             const balloonItem = document.createElement('div');
             balloonItem.className = 'absolute top-1/2 left-1/2 conveyor-belt-item';
@@ -713,34 +862,30 @@
             balloonEl.style.transform = 'scale(0.5)';
             balloonEl.style.color = `var(--tw-bg-${config.color})`;
             balloonItem.appendChild(balloonEl);
-            if (yieldVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
+            if (scoreVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
             conveyor2.appendChild(balloonItem);
             setTimeout(() => { if (conveyor2.contains(balloonItem)) conveyor2.removeChild(balloonItem); }, 4000);
             updateL2Stats();
-            if (gameState.l2.processedCount % 10 === 0) { updateChart(gameState.l2); }
             if (gameState.l2.processedCount === 25) setInsight("Your model is running. Are the pop rates acceptable? Pause and adjust!", 2);
-            if (gameState.l2.processedCount === 60) setInsight("The trend chart shows your AI's performance over time. Are you seeing consistent profit?", 2);
-
-        }, 300);
+            if (gameState.l2.processedCount === 60) setInsight("The performance monitor gives you live feedback. Are any of your strategies unprofitable?", 2);
+        }, 400); // Slower pace
     }
 
     function updateL2Stats() {
         document.getElementById('l2-processed-count').textContent = gameState.l2.processedCount;
-        ['red', 'blue', 'green', 'yellow'].forEach(color => {
-            const stats = gameState.l2.stats[color];
-            document.getElementById(`l2-${color}-yield`).textContent = stats.yield;
-            const popRate = stats.count > 0 ? ((stats.pops / stats.count) * 100).toFixed(0) : 0;
-            document.getElementById(`l2-${color}-pop`).textContent = `${popRate}% pop`;
-        });
+        updatePerformanceMonitor('l2');
     }
 
-    function endLevel2() {
-        clearInterval(gameState.l2.interval);
-        gameState.l2.isRunning = false;
-        gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 3);
-        saveGameState();
-        const summaryText = `By pausing and adjusting your AI, you acted as a Human-in-the-Loop. This is vital for safety and performance. You also encountered unseen 'yellow' data, forcing your model to adapt.`;
-        showSummary("Level 2 Complete", summaryText, startLevel3, startLevel2);
+    function endLevel2(isReview = false) {
+        if (!isReview) {
+            clearInterval(gameState.l2.interval);
+            gameState.l2.isRunning = false;
+            gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 3);
+            saveGameState();
+        }
+        updateL2Stats();
+        document.getElementById('l2-summary-area').style.display = 'block';
+        document.getElementById('l2-start-stop-btn').style.display = 'none';
     }
     
     // =================================
@@ -751,10 +896,9 @@
     const l3TempDisplay = document.getElementById('l3-temp-display');
     
     function startLevel3() {
-        if (!gameState.l3.stats.red) resetStats('l3');
         showScreen('level-3');
         updateL3Strategy();
-        initChart('l3-chart', gameState.l3);
+        buildPerformanceMonitor('l3');
         updateL3Stats();
         setInsight("Welcome to the real world! External factors like 'temperature' can affect your model. Adapt on the fly!", 3);
     }
@@ -813,36 +957,35 @@
             min = Math.max(1, Math.round(min * (1 - percentChange / 100)));
             max = Math.max(min + 1, Math.round(max * (1 - percentChange / 100)));
             const maxPumps = getRandomInt(min, max);
-            let yieldVal = 0;
-            if (strategyPumps > maxPumps) { gameState.l3.stats[type].pops++; } else { yieldVal = strategyPumps; gameState.l3.stats[type].yield += yieldVal; gameState.l3.totalYield += yieldVal; }
-            gameState.l3.stats[type].count++; gameState.l3.processedSinceChartUpdate++;
+            let scoreVal = 0;
+            if (strategyPumps > maxPumps) { gameState.l3.stats[type].pops++; } else { scoreVal = strategyPumps; gameState.l3.stats[type].score += scoreVal; gameState.l3.totalScore += scoreVal; }
+            gameState.l3.stats[type].count++;
             const balloonItem = document.createElement('div');
             balloonItem.className = 'absolute top-1/2 left-1/2 conveyor-belt-item';
             const balloonEl = document.createElement('div');
             balloonEl.className = `balloon bg-${config.color}`;
             balloonEl.style.transform = 'scale(0.5)'; balloonEl.style.color = `var(--tw-bg-${config.color})`;
             balloonItem.appendChild(balloonEl);
-            if (yieldVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
+            if (scoreVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
             l3Conveyor.appendChild(balloonItem);
             setTimeout(() => { if (l3Conveyor.contains(balloonItem)) l3Conveyor.removeChild(balloonItem); }, 4000);
             updateL3Stats();
-            if (gameState.l3.processedSinceChartUpdate % 10 === 0) { updateChart(gameState.l3); }
-             saveGameState(); // Save progress periodically in infinite mode
-         }, 300);
+            saveGameState();
+         }, 400);
     }
     
     function updateL3Stats() {
-        document.getElementById('l3-total-yield').textContent = gameState.l3.totalYield;
-        ['red', 'blue', 'green', 'yellow'].forEach(color => {
-            const stats = gameState.l3.stats[color];
-            document.getElementById(`l3-${color}-yield`).textContent = stats.yield;
-            const popRate = stats.count > 0 ? ((stats.pops / stats.count) * 100).toFixed(0) : 0;
-            document.getElementById(`l3-${color}-pop`).textContent = `${popRate}% pop`;
-        });
+        document.getElementById('l3-total-score').textContent = gameState.l3.totalScore;
+        updatePerformanceMonitor('l3');
     }
 
     // --- Initial Event Listeners ---
     homeBtn.addEventListener('click', goToLevelSelect);
+    helpBtn.addEventListener('click', () => {
+        const activeScreenId = document.querySelector('.active-screen').id;
+        if (activeScreenId === 'level-1') { gameState.tutorial.l1 = 0; showTutorialStep(L1_TUTORIAL_STEPS, 'l1'); }
+        if (activeScreenId === 'level-2') { gameState.tutorial.l2 = 0; showTutorialStep(L2_TUTORIAL_STEPS, 'l2'); }
+    });
     startGameBtn.addEventListener('click', goToLevelSelect);
     selectL1Btn.addEventListener('click', startLevel1);
     selectL2Btn.addEventListener('click', startLevel2);
@@ -850,21 +993,39 @@
     resetProgressBtn.addEventListener('click', resetAllProgress);
     l1PumpBtn.addEventListener('click', handleL1Pump);
     l1BankBtn.addEventListener('click', handleL1Bank);
+    document.getElementById('l1-summary-next-btn').addEventListener('click', startLevel2);
+    document.getElementById('l1-summary-replay-btn').addEventListener('click', replayLevel1);
+    document.getElementById('l2-summary-next-btn').addEventListener('click', startLevel3);
+    document.getElementById('l2-summary-replay-btn').addEventListener('click', replayLevel2);
+    document.getElementById('prev-slide-btn').addEventListener('click', () => renderEducationalSlides('l1', currentSlideIndex - 1));
+    document.getElementById('next-slide-btn').addEventListener('click', () => renderEducationalSlides('l1', currentSlideIndex + 1));
+
     l2StartStopBtn.addEventListener('click', toggleL2Simulation);
     setupL2Controls();
     l3StartStopBtn.addEventListener('click', toggleL3Simulation);
     setupL3Controls();
+    tutorialOverlay.addEventListener('click', () => { tutorialNextBtn.click(); });
+    tutorialBox.addEventListener('click', (e) => e.stopPropagation());
+    tutorialNextBtn.addEventListener('click', () => {
+        const activeScreenId = document.querySelector('.active-screen').id;
+        if (!activeScreenId.startsWith('level-')) return;
+        const levelKey = 'l' + activeScreenId.slice(-1);
+        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : L2_TUTORIAL_STEPS;
+        advanceTutorial(1, steps, levelKey);
+    });
+    tutorialPrevBtn.addEventListener('click', () => {
+        const activeScreenId = document.querySelector('.active-screen').id;
+        if (!activeScreenId.startsWith('level-')) return;
+        const levelKey = 'l' + activeScreenId.slice(-1);
+        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : L2_TUTORIAL_STEPS;
+        advanceTutorial(-1, steps, levelKey);
+    });
     
     // --- Load Game on Startup ---
-    window.onload = () => {
-        loadGameState();
-        // Reset any running simulations from a saved state
-        gameState.l2.isRunning = false;
-        gameState.l3.isRunning = false;
-    };
+    initGame();
+    document.addEventListener('DOMContentLoaded', initGame);
 
 </script>
 </body>
 </html>
-
 
