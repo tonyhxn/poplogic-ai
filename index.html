@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop Logic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #1e1b4b; /* Dark Indigo */
+        }
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            padding-top: 60px; /* Space for global banner */
+        }
+        .active-screen {
+            display: flex;
+        }
+        .balloon {
+            width: 100px;
+            height: 120px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transition: transform 0.2s ease-out;
+            cursor: pointer;
+            position: relative;
+            background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0) 50%);
+        }
+        .balloon:hover {
+            animation: hover-wobble 0.8s ease-in-out infinite;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid currentColor;
+        }
+        .balloon-face {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 30%;
+        }
+        .eye {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            top: 0;
+            transition: transform 0.2s ease;
+        }
+        .eye.left { left: 5px; }
+        .eye.right { right: 5px; }
+        .mouth {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            border: 3px solid white;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            transition: height 0.2s ease, border-radius 0.2s ease;
+        }
+        .pump-jiggle {
+            animation: pump-jiggle 0.3s ease-in-out;
+        }
+        @keyframes pump-jiggle {
+            0%, 100% { transform: scale(var(--scale, 1)) rotate(0deg); }
+            25% { transform: scale(var(--scale, 1)) rotate(-2deg); }
+            75% { transform: scale(var(--scale, 1)) rotate(2deg); }
+        }
+        @keyframes hover-wobble {
+            0%, 100% { transform: scale(var(--scale, 1)) rotate(0deg); }
+            25% { transform: scale(var(--scale, 1)) translateY(-2px) rotate(1deg); }
+            75% { transform: scale(var(--scale, 1)) translateY(0px) rotate(-1deg); }
+        }
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: explode 0.7s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: var(--transform-end) scale(0); opacity: 0; }
+        }
+        .conveyor-belt-item {
+            animation: conveyor-process 4s ease-out forwards;
+        }
+        @keyframes conveyor-process {
+            0% { transform: translateX(-250px) translateY(-50%); }
+            50% { transform: translateX(0) translateY(-50%); }
+            80% { opacity: 1; }
+            100% { transform: translateX(0) translateY(-50%); opacity: 0; }
+        }
+        .btn { transition: transform 0.1s ease, background-color 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        
+        /* Tutorial Styles */
+        #tutorial-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+        }
+        .tutorial-highlight {
+            position: absolute;
+            border-radius: 1.5rem;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.7);
+            z-index: 1000;
+            transition: all 0.5s ease-in-out;
+        }
+        #tutorial-box {
+            position: absolute;
+            background: #312e81; /* Indigo-800 */
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            border: 2px solid #4f46e5; /* Indigo-600 */
+            max-width: 350px;
+            z-index: 1001;
+            transition: all 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-indigo-900 text-white">
+
+    <!-- Global Banner -->
+    <div class="fixed top-0 left-0 right-0 bg-indigo-900/80 backdrop-blur-sm p-3 text-center z-50 border-b border-indigo-700">
+        <h3 class="text-sm font-semibold tracking-wider text-indigo-300 mb-2">GLOBAL YIELD (ALL TRAINERS)</h3>
+        <div class="flex justify-center items-center space-x-4 md:space-x-8 text-xs md:text-sm">
+            <div><span class="font-bold text-red-400">RED:</span> $<span id="global-red">10000</span></div>
+            <div><span class="font-bold text-blue-400">BLUE:</span> $<span id="global-blue">5000</span></div>
+            <div><span class="font-bold text-green-400">GREEN:</span> $<span id="global-green">3453</span></div>
+            <div><span class="font-bold text-yellow-400">GOLD:</span> $<span id="global-gold">1500</span></div>
+        </div>
+    </div>
+
+    <!-- Home Button -->
+    <button id="home-btn" class="fixed top-20 left-4 z-50 bg-indigo-500 hover:bg-indigo-600 p-3 rounded-full shadow-lg transition hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </button>
+    
+    <!-- Main Menu Screen -->
+    <div id="main-menu" class="screen active-screen flex-col justify-center items-center p-4 text-center">
+        <h1 class="text-6xl md:text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-blue-400 to-green-400">Pop Logic</h1>
+        <h2 class="text-2xl md:text-3xl font-bold text-indigo-200 mb-6">An AI Training Game</h2>
+        <p class="max-w-2xl text-indigo-300 mb-8">A game about patterns, predictions, and probability. Can you master the logic before the pop? Learn core AI concepts in a fun, risk-vs-reward challenge.</p>
+        <button id="start-game-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-10 rounded-2xl text-xl shadow-lg transform hover:scale-105">Start Training</button>
+    </div>
+
+    <!-- Level Select Screen -->
+    <div id="level-select" class="screen flex-col justify-center items-center p-4">
+        <div class="text-center">
+            <h1 class="text-5xl font-bold mb-8">Select a Mode</h1>
+            <div class="grid md:grid-cols-3 gap-8 w-full max-w-5xl">
+                <button id="select-l1-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition">
+                    <h2 class="text-2xl font-bold">Level 1: Human Training</h2>
+                    <p class="text-indigo-300 mt-2">Learn the basics of pattern recognition and data bias by training yourself first.</p>
+                </button>
+                <button id="select-l2-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                     <h2 class="text-2xl font-bold flex items-center gap-2">Level 2: AI Supervisor <span id="l2-lock" class="text-2xl">🔒</span></h2>
+                    <p class="text-indigo-300 mt-2">Build a simple AI and act as its Human-in-the-Loop supervisor to guide its performance.</p>
+                </button>
+                <button id="select-l3-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                     <h2 class="text-2xl font-bold flex items-center gap-2">Open Game Mode <span id="l3-lock" class="text-2xl">🔒</span></h2>
+                    <p class="text-indigo-300 mt-2">Test your adaptive strategy in an infinite mode with a dynamic, unpredictable environment.</p>
+                </button>
+            </div>
+             <button id="reset-progress-btn" class="btn mt-8 text-indigo-300 hover:text-white hover:bg-red-500/50 py-2 px-4 rounded-lg">Reset All Progress</button>
+        </div>
+    </div>
+    
+    <!-- Level 1 Screen -->
+    <div id="level-1" class="screen flex-col justify-center items-center p-4">
+        <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+            <div id="l1-game-area" class="flex-grow lg:w-3/5 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center justify-between">
+                <div id="l1-history-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 w-full mb-4">
+                    <h3 class="text-lg font-bold mb-2 text-center text-indigo-200">Last 8 Balloons</h3>
+                    <div id="l1-history" class="grid grid-cols-8 gap-x-2 justify-items-center text-center text-sm h-16 items-center"></div>
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-indigo-300">Level 1: Human Training</p>
+                    <h2 id="l1-progress" class="text-2xl font-bold">Balloon 1 of 15</h2>
+                </div>
+                <div id="l1-balloon-area" class="w-full h-64 flex justify-center items-center my-4 relative"></div>
+                <div class="w-full flex flex-col md:flex-row gap-4">
+                    <button id="l1-pump-btn" class="btn bg-green-500 hover:bg-green-600 flex-1 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">PUMP (+1)</button>
+                    <button id="l1-bank-btn" class="btn bg-blue-500 hover:bg-blue-600 flex-1 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">BANK PROFIT ($<span id="l1-current-yield">0</span>)</button>
+                </div>
+            </div>
+            <div class="lg:w-2/5 flex flex-col gap-8">
+                <div id="l1-data-panel" class="bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700">
+                    <h3 class="text-xl font-bold mb-4 text-center">Your Personal Data</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-baseline"><span class="font-bold text-red-400 text-lg">Red Yield:</span><div class="text-right"><span id="l1-red-yield" class="text-xl font-mono">0</span><span class="text-sm text-gray-400 block">Avg: <span id="l1-red-avg">0.0</span></span></div></div>
+                        <div class="flex justify-between items-baseline"><span class="font-bold text-blue-400 text-lg">Blue Yield:</span><div class="text-right"><span id="l1-blue-yield" class="text-xl font-mono">0</span><span class="text-sm text-gray-400 block">Avg: <span id="l1-blue-avg">0.0</span></span></div></div>
+                        <div class="flex justify-between items-baseline"><span class="font-bold text-green-400 text-lg">Green Yield:</span><div class="text-right"><span id="l1-green-yield" class="text-xl font-mono">0</span><span class="text-sm text-gray-400 block">Avg: <span id="l1-green-avg">0.0</span></span></div></div>
+                    </div>
+                </div>
+                <div class="bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700">
+                     <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
+                     <p id="l1-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Level Summary Screen -->
+    <div id="level-summary" class="screen flex-col justify-center items-center p-4">
+        <div class="text-center">
+            <h1 id="summary-title" class="text-5xl font-bold">Level Complete!</h1>
+            <p id="summary-text" class="max-w-2xl text-indigo-200 mt-4 mb-8"></p>
+            <div class="flex gap-4 justify-center">
+                <button id="summary-next-btn" class="btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Next Level</button>
+                <button id="summary-replay-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Replay</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Level 2 Screen -->
+    <div id="level-2" class="screen flex-col justify-center items-center p-4">
+        <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+            <div id="l2-control-panel" class="lg:w-1/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
+                <h3 class="text-xl font-bold mb-4 text-center">AI Strategy Rules</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4"><label class="font-bold text-red-400 w-16">Red:</label><input type="range" id="l2-red-pumps" min="1" max="15" value="7" class="w-full"><span id="l2-red-val" class="font-mono w-8 text-center">7</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-blue-400 w-16">Blue:</label><input type="range" id="l2-blue-pumps" min="1" max="10" value="5" class="w-full"><span id="l2-blue-val" class="font-mono w-8 text-center">5</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-green-400 w-16">Green:</label><input type="range" id="l2-green-pumps" min="1" max="12" value="5" class="w-full"><span id="l2-green-val" class="font-mono w-8 text-center">5</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-yellow-400 w-16">Yellow:</label><input type="range" id="l2-yellow-pumps" min="1" max="25" value="8" class="w-full"><span id="l2-yellow-val" class="font-mono w-8 text-center">8</span></div>
+                </div>
+                <div class="mt-6">
+                    <button id="l2-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">START SIMULATION</button>
+                </div>
+                <div class="mt-auto pt-6">
+                    <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
+                    <p id="l2-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
+                </div>
+            </div>
+            <div id="l2-simulation-panel" class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center">
+                <h3 class="text-xl font-bold mb-2">Live Simulation Feed</h3>
+                <p class="text-sm text-indigo-300 mb-4">Processed: <span id="l2-processed-count">0</span> / 100</p>
+                <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700">
+                    <div id="l2-conveyor" class="absolute h-full w-full"></div>
+                </div>
+                <div class="w-full mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-red-400">Red Yield</p><p id="l2-red-yield" class="text-2xl font-mono">0</p><p id="l2-red-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-blue-400">Blue Yield</p><p id="l2-blue-yield" class="text-2xl font-mono">0</p><p id="l2-blue-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-green-400">Green Yield</p><p id="l2-green-yield" class="text-2xl font-mono">0</p><p id="l2-green-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-yellow-400">Yellow Yield</p><p id="l2-yellow-yield" class="text-2xl font-mono">0</p><p id="l2-yellow-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                </div>
+                <div class="mt-4 w-full bg-indigo-700/50 p-3 rounded-2xl text-center"><h4 class="font-bold text-indigo-200">Yield Trend</h4><div class="h-32 w-full mt-2"><canvas id="l2-chart"></canvas></div></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Level 3 Screen -->
+    <div id="level-3" class="screen flex-col justify-center items-center p-4">
+        <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+            <div class="lg:w-1/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
+                <div class="text-center mb-4"><h3 class="text-xl font-bold">Room Temperature</h3><p id="l3-temp-display" class="text-5xl font-black transition-colors duration-500">20°C</p></div>
+                <h3 class="text-xl font-bold mb-4 text-center">AI Strategy Rules</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4"><label class="font-bold text-red-400 w-16">Red:</label><input type="range" id="l3-red-pumps" min="1" max="25" value="8" class="w-full"><span id="l3-red-val" class="font-mono w-8 text-center">8</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-blue-400 w-16">Blue:</label><input type="range" id="l3-blue-pumps" min="1" max="25" value="5" class="w-full"><span id="l3-blue-val" class="font-mono w-8 text-center">5</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-green-400 w-16">Green:</label><input type="range" id="l3-green-pumps" min="1" max="25" value="6" class="w-full"><span id="l3-green-val" class="font-mono w-8 text-center">6</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-yellow-400 w-16">Yellow:</label><input type="range" id="l3-yellow-pumps" min="1" max="30" value="10" class="w-full"><span id="l3-yellow-val" class="font-mono w-8 text-center">10</span></div>
+                </div>
+                <div class="mt-6"><button id="l3-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">START SIMULATION</button></div>
+                 <div class="mt-auto pt-6">
+                    <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
+                    <p id="l3-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
+                </div>
+            </div>
+            <div class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center">
+                <h3 class="text-xl font-bold mb-2">Open Game Mode</h3>
+                <p class="text-sm text-indigo-300 mb-4">Total Yield: $<span id="l3-total-yield">0</span></p>
+                <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700"><div id="l3-conveyor" class="absolute h-full w-full"></div></div>
+                <div class="w-full mt-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-red-400">Red Yield</p><p id="l3-red-yield" class="text-2xl font-mono">0</p><p id="l3-red-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-blue-400">Blue Yield</p><p id="l3-blue-yield" class="text-2xl font-mono">0</p><p id="l3-blue-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-green-400">Green Yield</p><p id="l3-green-yield" class="text-2xl font-mono">0</p><p id="l3-green-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                    <div class="bg-indigo-700/50 p-3 rounded-2xl"><p class="font-bold text-yellow-400">Yellow Yield</p><p id="l3-yellow-yield" class="text-2xl font-mono">0</p><p id="l3-yellow-pop" class="text-xs text-indigo-300">0% pop</p></div>
+                </div>
+                <div class="mt-4 w-full bg-indigo-700/50 p-3 rounded-2xl text-center"><h4 class="font-bold text-indigo-200">Yield Trend</h4><div class="h-32 w-full mt-2"><canvas id="l3-chart"></canvas></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay" class="fixed inset-0 z-[998] hidden">
+        <div id="tutorial-highlight" class="tutorial-highlight"></div>
+        <div id="tutorial-box" class="shadow-2xl">
+            <h3 id="tutorial-title" class="text-xl font-bold mb-2"></h3>
+            <p id="tutorial-text" class="text-indigo-200 mb-4"></p>
+            <button id="tutorial-next-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full font-bold py-2 px-4 rounded-lg">Got it!</button>
+        </div>
+    </div>
+
+<script>
+    // --- DOM Elements ---
+    const screens = document.querySelectorAll('.screen');
+    const homeBtn = document.getElementById('home-btn');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const selectL1Btn = document.getElementById('select-l1-btn');
+    const selectL2Btn = document.getElementById('select-l2-btn');
+    const selectL3Btn = document.getElementById('select-l3-btn');
+    const resetProgressBtn = document.getElementById('reset-progress-btn');
+
+    // --- Game Config ---
+    const BALLOON_CONFIG = {
+        red: { color: 'red-400', range: [6, 12], chartColor: '#F87171' },
+        blue: { color: 'blue-400', range: [4, 6], chartColor: '#60A5FA' },
+        green: { color: 'green-400', range: [2, 8], chartColor: '#4ADE80' },
+        yellow: { color: 'yellow-400', range: [1, 20], chartColor: '#FBBF24' },
+    };
+
+    const L1_SEQUENCE = ['red', 'red', 'red', 'red', 'blue', 'blue', 'blue', 'blue', 'green', 'red', 'blue', 'green', 'red', 'blue', 'green'];
+    
+    // --- Game State ---
+    let gameState;
+
+    function getDefaultGameState() {
+        return {
+            unlockedLevels: 1,
+            tutorial: {
+                l1: 0,
+                l2: 0,
+            },
+            l1: { stats: {} },
+            l2: { stats: {} },
+            l3: { stats: {} }
+        };
+    }
+
+    function resetAllProgress() {
+        localStorage.removeItem('popLogicState');
+        gameState = getDefaultGameState();
+        resetStats('l1');
+        resetStats('l2');
+        resetStats('l3');
+        selectL2Btn.disabled = true;
+        document.getElementById('l2-lock').style.display = 'inline-block';
+        selectL3Btn.disabled = true;
+        document.getElementById('l3-lock').style.display = 'inline-block';
+        goToLevelSelect();
+    }
+    
+    function saveGameState() {
+        localStorage.setItem('popLogicState', JSON.stringify(gameState));
+    }
+
+    function loadGameState() {
+        const savedState = localStorage.getItem('popLogicState');
+        if (savedState) {
+            gameState = JSON.parse(savedState);
+             // Ensure new properties exist if loading old save data
+            if (!gameState.tutorial) gameState.tutorial = { l1: 0, l2: 0 };
+        } else {
+            gameState = getDefaultGameState();
+        }
+    }
+    
+    function resetStats(level) {
+        const statsTemplate = { yield: 0, pops: 0, count: 0, pumps: 0 };
+        gameState[level].stats = {
+            red: {...statsTemplate},
+            blue: {...statsTemplate},
+            green: {...statsTemplate},
+            yellow: {...statsTemplate}
+        };
+        if (level === 'l1') {
+             gameState.l1.history = [];
+             gameState.l1.balloonIndex = 0;
+        }
+        if (level === 'l2') {
+            gameState.l2.processedCount = 0;
+        }
+         if (level === 'l3') {
+            gameState.l3.totalYield = 0;
+            gameState.l3.processedSinceChartUpdate = 0;
+            gameState.l3.temperature = 20;
+        }
+    }
+
+    // --- Utility Functions ---
+    const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    
+    const showScreen = (screenId) => {
+        screens.forEach(s => s.classList.remove('active-screen'));
+        document.getElementById(screenId).classList.add('active-screen');
+        homeBtn.style.display = (screenId === 'main-menu' || screenId === 'level-select') ? 'none' : 'block';
+    };
+
+    // --- Global Banner Update ---
+    setInterval(() => {
+        document.getElementById('global-red').textContent = parseInt(document.getElementById('global-red').textContent) + getRandomInt(1, 5);
+        document.getElementById('global-blue').textContent = parseInt(document.getElementById('global-blue').textContent) + getRandomInt(0, 3);
+        document.getElementById('global-green').textContent = parseInt(document.getElementById('global-green').textContent) + getRandomInt(0, 2);
+        document.getElementById('global-gold').textContent = parseInt(document.getElementById('global-gold').textContent) + getRandomInt(0, 1);
+    }, 2000);
+    
+    // --- Explosion Animation ---
+    function createExplosion(container, color) {
+        const PARTICLE_COUNT = 20;
+        const colors = [BALLOON_CONFIG[color].chartColor, '#FFFFFF', '#FBBF24'];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const angle = Math.random() * 2 * Math.PI;
+            const distance = Math.random() * 70 + 30;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            particle.style.setProperty('--transform-end', `translate(${x}px, ${y}px)`);
+            particle.style.background = colors[i % colors.length];
+            container.appendChild(particle);
+            setTimeout(() => {
+                if (container.contains(particle)) {
+                    container.removeChild(particle);
+                }
+            }, 700);
+        }
+    }
+    
+    // --- Tutorial System ---
+    const tutorialOverlay = document.getElementById('tutorial-overlay');
+    const tutorialHighlight = document.getElementById('tutorial-highlight');
+    const tutorialBox = document.getElementById('tutorial-box');
+
+    function showTutorialStep(steps, level) {
+        const stepIndex = gameState.tutorial[level];
+        if (stepIndex >= steps.length) {
+            tutorialOverlay.style.display = 'none';
+            return;
+        }
+
+        const step = steps[stepIndex];
+        const targetElement = document.querySelector(step.element);
+        
+        if (!targetElement) {
+             gameState.tutorial[level]++;
+             showTutorialStep(steps, level);
+             return;
+        }
+
+        tutorialOverlay.style.display = 'block';
+        const rect = targetElement.getBoundingClientRect();
+
+        tutorialHighlight.style.left = `${rect.left - 10}px`;
+        tutorialHighlight.style.top = `${rect.top - 10}px`;
+        tutorialHighlight.style.width = `${rect.width + 20}px`;
+        tutorialHighlight.style.height = `${rect.height + 20}px`;
+
+        document.getElementById('tutorial-title').textContent = step.title;
+        document.getElementById('tutorial-text').innerHTML = step.text;
+
+        const boxTop = rect.bottom + 20;
+        const boxLeft = rect.left + (rect.width / 2) - 175; // 175 is half of box width
+        
+        tutorialBox.style.top = `${boxTop}px`;
+        tutorialBox.style.left = `${Math.max(10, Math.min(window.innerWidth - 360, boxLeft))}px`;
+        
+        document.getElementById('tutorial-next-btn').onclick = () => {
+            gameState.tutorial[level]++;
+            saveGameState();
+            showTutorialStep(steps, level);
+        };
+    }
+
+    const L1_TUTORIAL_STEPS = [
+        { element: '#l1-game-area', title: 'Welcome to Training!', text: "Your goal is simple: PUMP the balloon to increase its value, but BANK the profit before it pops!"},
+        { element: '#l1-data-panel', title: 'Your Personal Data', text: "As you play, your results will appear here. This is your AI's 'memory'. Use it to learn the balloon behaviors."},
+        { element: '#l1-data-panel .text-red-400', title: 'Check your Average', text: () => `After a few successful runs, the <strong>Avg. pumps</strong> stat appears. Your current average for Red balloons is <strong>${gameState.l1.stats.red.pumps / gameState.l1.stats.red.count || 0}</strong>. Is this a good number?`},
+        { element: '#l1-history-panel', title: "AI's Short-Term Memory", text: "This panel shows your last 8 results. Think of this as an AI's <strong>Context Window</strong>. Like this panel, a GenAI model can only 'remember' a limited amount of recent information to make its next decision. Information that scrolls off is forgotten!"},
+        { element: '.bg-green-400', title: 'Noisy Data!', text: "Watch out! Green balloons are highly unpredictable. In AI, this is called 'noisy data', and it's very difficult to make accurate predictions from it."},
+    ];
+     const L2_TUTORIAL_STEPS = [
+        { element: '#l2-control-panel', title: 'Build Your AI!', text: "Now you're the teacher. Use the sliders to set rules for your AI based on what you learned in Level 1."},
+        { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the stats and the trend chart to see how it performs."},
+        { element: '#l2-start-stop-btn', title: 'Human-in-the-Loop', text: "Things not going well? You can PAUSE the simulation at any time to adjust your AI's rules. This is your role as a Human Supervisor!"},
+    ];
+
+    // --- Navigation ---
+    function goToLevelSelect() {
+        showScreen('level-select');
+        if (gameState.unlockedLevels >= 2) {
+            selectL2Btn.disabled = false;
+            document.getElementById('l2-lock').style.display = 'none';
+        }
+        if (gameState.unlockedLevels >= 3) {
+            selectL3Btn.disabled = false;
+            document.getElementById('l3-lock').style.display = 'none';
+        }
+    }
+
+    function setInsight(text, level) {
+        const insightEl = document.getElementById(`l${level}-insights`);
+        if (!insightEl) return;
+        insightEl.style.opacity = '0';
+        setTimeout(() => {
+            insightEl.innerHTML = text;
+            insightEl.style.opacity = '1';
+        }, 300);
+    }
+
+    function showSummary(title, text, nextLevelCallback, replayCallback) {
+        showScreen('level-summary');
+        document.getElementById('summary-title').textContent = title;
+        document.getElementById('summary-text').innerHTML = text;
+        document.getElementById('summary-next-btn').onclick = nextLevelCallback;
+        document.getElementById('summary-replay-btn').onclick = replayCallback;
+        if(nextLevelCallback === null) {
+            document.getElementById('summary-next-btn').style.display = 'none';
+        } else {
+            document.getElementById('summary-next-btn').style.display = 'inline-block';
+        }
+    }
+
+    // =================================
+    // ========= LEVEL 1 LOGIC =========
+    // =================================
+    const l1PumpBtn = document.getElementById('l1-pump-btn');
+    const l1BankBtn = document.getElementById('l1-bank-btn');
+    const l1BalloonArea = document.getElementById('l1-balloon-area');
+
+    function startLevel1() {
+        if (!gameState.l1.stats.red) resetStats('l1'); // Only reset if no data exists
+        showScreen('level-1');
+        setupNextL1Balloon();
+        showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+    }
+
+    function setupNextL1Balloon() {
+        if (gameState.l1.balloonIndex >= L1_SEQUENCE.length) { endLevel1(); return; }
+        const type = L1_SEQUENCE[gameState.l1.balloonIndex];
+        gameState.l1.currentBalloon = { type: type, maxPumps: getRandomInt(...BALLOON_CONFIG[type].range), colorClass: BALLOON_CONFIG[type].color };
+        gameState.l1.currentPumps = 0;
+        renderL1();
+
+        const index = gameState.l1.balloonIndex;
+        if (index === 0) setInsight("Every pump adds to the yield, but also risk. How far will you push it?", 1);
+        else if (index === 4) setInsight("You've seen a few red balloons now. Have you developed a strategy? 🤔", 1);
+        else if (index === 8) setInsight("The data is changing. A good AI must adapt its strategy constantly.", 1);
+        else if (index === 12) setInsight("Trusting the global data can be misleading. What does YOUR data tell you?", 1);
+        
+        // Trigger tutorial steps
+        if(gameState.tutorial.l1 === 4 && type === 'green') showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+
+    }
+    
+    function renderL1() {
+        const { currentBalloon, currentPumps } = gameState.l1;
+        const scale = 1 + currentPumps * 0.08;
+        l1BalloonArea.innerHTML = `<div class="balloon bg-${currentBalloon.colorClass}" style="--scale: ${scale}; transform: scale(${scale}); color: var(--tw-bg-${currentBalloon.colorClass})"><div class="balloon-face"><div class="eye left" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="eye right" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="mouth" style="height: ${Math.min(25, 15 + currentPumps * 1.5)}px; border-radius: 0 0 ${Math.min(25, 15 + currentPumps)}px ${Math.min(25, 15 + currentPumps)}px;"></div></div></div>`;
+        document.getElementById('l1-progress').textContent = `Balloon ${gameState.l1.balloonIndex + 1} of ${L1_SEQUENCE.length}`;
+        document.getElementById('l1-current-yield').textContent = currentPumps;
+        
+        Object.keys(gameState.l1.stats).forEach(color => {
+            if (document.getElementById(`l1-${color}-yield`)) {
+                const stat = gameState.l1.stats[color];
+                document.getElementById(`l1-${color}-yield`).textContent = stat.yield;
+                const avg = stat.count > 0 ? (stat.pumps / stat.count).toFixed(1) : '0.0';
+                document.getElementById(`l1-${color}-avg`).textContent = avg;
+            }
+        });
+
+        const historyEl = document.getElementById('l1-history');
+        historyEl.innerHTML = (gameState.l1.history || []).map(h => {
+            const colorClass = BALLOON_CONFIG[h.type].color;
+            const popClass = h.popped ? 'opacity-60' : '';
+            return `<div class="w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-${colorClass} ${popClass} flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md" style="color: var(--tw-bg-${colorClass});"><span class="text-white">${h.pumps}</span><span class="text-lg">${h.popped ? '💥' : '💰'}</span><div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent" style="border-top-color: var(--tw-bg-${colorClass});"></div></div>`;
+        }).join('');
+    }
+
+    function handleL1Pump() {
+        const balloonEl = l1BalloonArea.querySelector('.balloon');
+        if (balloonEl) { balloonEl.classList.remove('pump-jiggle'); void balloonEl.offsetWidth; balloonEl.classList.add('pump-jiggle'); }
+        gameState.l1.currentPumps++;
+        if (gameState.l1.currentPumps > gameState.l1.currentBalloon.maxPumps) { handleL1Pop(); } else { renderL1(); }
+    }
+
+    function handleL1Bank() {
+        const { type } = gameState.l1.currentBalloon;
+        const pumps = gameState.l1.currentPumps;
+        gameState.l1.stats[type].yield += pumps;
+        gameState.l1.stats[type].pumps += pumps;
+        gameState.l1.stats[type].count++;
+        addToL1History(type, pumps, false);
+        gameState.l1.balloonIndex++;
+        
+        if (gameState.tutorial.l1 === 1) showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+        if (gameState.tutorial.l1 === 2 && gameState.l1.stats.red.count > 1) {
+            L1_TUTORIAL_STEPS[2].text = `After a few successful runs, the <strong>Avg. pumps</strong> stat appears. Your current average for Red balloons is <strong>${(gameState.l1.stats.red.pumps / gameState.l1.stats.red.count).toFixed(1)}</strong>. Is this a reliable strategy?`;
+             showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+        }
+
+        setupNextL1Balloon();
+    }
+    
+    function handleL1Pop() {
+        const { type } = gameState.l1.currentBalloon;
+        const pumps = gameState.l1.currentPumps;
+        const balloonEl = l1BalloonArea.querySelector('.balloon');
+        if (balloonEl) { createExplosion(l1BalloonArea, type); balloonEl.style.display = 'none'; }
+        gameState.l1.stats[type].count++;
+        addToL1History(type, pumps, true);
+        setTimeout(() => { gameState.l1.balloonIndex++; setupNextL1Balloon(); }, 500);
+    }
+
+    function addToL1History(type, pumps, popped) {
+        if(!gameState.l1.history) gameState.l1.history = [];
+        gameState.l1.history.unshift({ type, pumps, popped });
+        if (gameState.l1.history.length > 8) gameState.l1.history.pop();
+        if (gameState.tutorial.l1 === 3) showTutorialStep(L1_TUTORIAL_STEPS, 'l1');
+    }
+
+    function endLevel1() {
+        gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 2);
+        saveGameState();
+        const summaryText = `You discovered that some data (like blue balloons) is predictable, while some (like green) is 'noisy'. This is the first step in training an AI: understanding the data's quality and biases.`;
+        showSummary("Level 1 Complete", summaryText, startLevel2, startLevel1);
+    }
+    
+    // --- Chart Logic ---
+    function initChart(canvasId, levelState) {
+        if (levelState.chart) levelState.chart.destroy();
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        levelState.chart = new Chart(ctx, { type: 'line', data: { labels: [], datasets: Object.keys(BALLOON_CONFIG).map(color => ({ label: color.charAt(0).toUpperCase() + color.slice(1), data: [], borderColor: BALLOON_CONFIG[color].chartColor, tension: 0.1, fill: false, borderWidth: 2 }))}, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: '#a5b4fc' }, grid: { color: 'rgba(99, 102, 241, 0.2)' } }, y: { ticks: { color: '#a5b4fc' }, grid: { color: 'rgba(99, 102, 241, 0.2)' }, beginAtZero: true } }, plugins: { legend: { labels: { color: '#e0e7ff' } } } }});
+    }
+
+    function updateChart(levelState) {
+        const chart = levelState.chart; if (!chart) return;
+        const label = levelState.processedCount ?? levelState.processedSinceChartUpdate;
+        chart.data.labels.push(label);
+        Object.keys(BALLOON_CONFIG).forEach((color, index) => { chart.data.datasets[index].data.push(levelState.stats[color].yield); });
+        if (chart.data.labels.length > 10) { chart.data.labels.shift(); chart.data.datasets.forEach(ds => ds.data.shift()); }
+        chart.update();
+    }
+    
+    // =================================
+    // ========= LEVEL 2 LOGIC =========
+    // =================================
+    const l2StartStopBtn = document.getElementById('l2-start-stop-btn');
+    const conveyor2 = document.getElementById('l2-conveyor');
+
+    function startLevel2() {
+        if (!gameState.l2.stats.red) resetStats('l2');
+        showScreen('level-2');
+        initChart('l2-chart', gameState.l2);
+        updateL2Stats();
+        setInsight("Set your AI's rules based on what you learned. Is your model ready for unseen 'yellow' data?", 2);
+        showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
+    }
+    
+    function setupL2Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l2-${color}-pumps`); const valSpan = document.getElementById(`l2-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; if (!gameState.l2.isRunning) updateL2Strategy(); }); }); }
+    function updateL2Strategy() { ['red', 'blue', 'green', 'yellow'].forEach(color => { gameState.l2.strategy[color] = parseInt(document.getElementById(`l2-${color}-pumps`).value); }); }
+
+    function toggleL2Simulation() {
+        gameState.l2.isRunning = !gameState.l2.isRunning;
+        if (gameState.l2.isRunning) {
+            if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
+            l2StartStopBtn.textContent = 'PAUSE & ADJUST';
+            l2StartStopBtn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
+            l2StartStopBtn.classList.add('bg-amber-500', 'hover:bg-amber-600');
+            updateL2Strategy();
+            runL2Simulation();
+        } else {
+            if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
+            l2StartStopBtn.textContent = 'RESUME SIMULATION';
+            l2StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
+            l2StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            clearInterval(gameState.l2.interval);
+        }
+    }
+
+    function getL2RandomBalloon() { const rand = Math.random(); if (rand < 0.3) return 'red'; if (rand < 0.6) return 'blue'; if (rand < 0.8) return 'green'; return 'yellow'; }
+
+    function runL2Simulation() {
+        gameState.l2.interval = setInterval(() => {
+            if (gameState.l2.processedCount >= 100) { endLevel2(); return; }
+            const type = getL2RandomBalloon();
+            const config = BALLOON_CONFIG[type];
+            const maxPumps = getRandomInt(...config.range);
+            const strategyPumps = gameState.l2.strategy[type];
+            let yieldVal = 0;
+            if (strategyPumps > maxPumps) { gameState.l2.stats[type].pops++; } else { yieldVal = strategyPumps; gameState.l2.stats[type].yield += yieldVal; }
+            gameState.l2.stats[type].count++; gameState.l2.processedCount++;
+            const balloonItem = document.createElement('div');
+            balloonItem.className = 'absolute top-1/2 left-1/2 conveyor-belt-item';
+            const balloonEl = document.createElement('div');
+            balloonEl.className = `balloon bg-${config.color}`;
+            balloonEl.style.transform = 'scale(0.5)';
+            balloonEl.style.color = `var(--tw-bg-${config.color})`;
+            balloonItem.appendChild(balloonEl);
+            if (yieldVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
+            conveyor2.appendChild(balloonItem);
+            setTimeout(() => { if (conveyor2.contains(balloonItem)) conveyor2.removeChild(balloonItem); }, 4000);
+            updateL2Stats();
+            if (gameState.l2.processedCount % 10 === 0) { updateChart(gameState.l2); }
+            if (gameState.l2.processedCount === 25) setInsight("Your model is running. Are the pop rates acceptable? Pause and adjust!", 2);
+            if (gameState.l2.processedCount === 60) setInsight("The trend chart shows your AI's performance over time. Are you seeing consistent profit?", 2);
+
+        }, 300);
+    }
+
+    function updateL2Stats() {
+        document.getElementById('l2-processed-count').textContent = gameState.l2.processedCount;
+        ['red', 'blue', 'green', 'yellow'].forEach(color => {
+            const stats = gameState.l2.stats[color];
+            document.getElementById(`l2-${color}-yield`).textContent = stats.yield;
+            const popRate = stats.count > 0 ? ((stats.pops / stats.count) * 100).toFixed(0) : 0;
+            document.getElementById(`l2-${color}-pop`).textContent = `${popRate}% pop`;
+        });
+    }
+
+    function endLevel2() {
+        clearInterval(gameState.l2.interval);
+        gameState.l2.isRunning = false;
+        gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 3);
+        saveGameState();
+        const summaryText = `By pausing and adjusting your AI, you acted as a Human-in-the-Loop. This is vital for safety and performance. You also encountered unseen 'yellow' data, forcing your model to adapt.`;
+        showSummary("Level 2 Complete", summaryText, startLevel3, startLevel2);
+    }
+    
+    // =================================
+    // ========= LEVEL 3 LOGIC =========
+    // =================================
+    const l3StartStopBtn = document.getElementById('l3-start-stop-btn');
+    const l3Conveyor = document.getElementById('l3-conveyor');
+    const l3TempDisplay = document.getElementById('l3-temp-display');
+    
+    function startLevel3() {
+        if (!gameState.l3.stats.red) resetStats('l3');
+        showScreen('level-3');
+        updateL3Strategy();
+        initChart('l3-chart', gameState.l3);
+        updateL3Stats();
+        setInsight("Welcome to the real world! External factors like 'temperature' can affect your model. Adapt on the fly!", 3);
+    }
+    
+    function setupL3Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l3-${color}-pumps`); const valSpan = document.getElementById(`l3-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; updateL3Strategy(); }); }); }
+    function updateL3Strategy() { ['red', 'blue', 'green', 'yellow'].forEach(color => { gameState.l3.strategy[color] = parseInt(document.getElementById(`l3-${color}-pumps`).value); }); }
+
+    function toggleL3Simulation() {
+        gameState.l3.isRunning = !gameState.l3.isRunning;
+        if (gameState.l3.isRunning) {
+            l3StartStopBtn.textContent = 'PAUSE & ADJUST';
+            l3StartStopBtn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
+            l3StartStopBtn.classList.add('bg-amber-500', 'hover:bg-amber-600');
+            runL3Simulation();
+            runL3TempChanges();
+        } else {
+            l3StartStopBtn.textContent = 'RESUME SIMULATION';
+            l3StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
+            l3StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            clearInterval(gameState.l3.interval);
+            clearTimeout(gameState.l3.tempInterval);
+            l3TempDisplay.classList.remove('temp-flicker-hot', 'temp-flicker-cold');
+        }
+    }
+    
+    function runL3TempChanges() {
+        const updateTemp = () => {
+            const change = getRandomInt(-5, 5);
+            gameState.l3.temperature += change;
+            if (gameState.l3.temperature > 40) gameState.l3.temperature = 40;
+            if (gameState.l3.temperature < 0) gameState.l3.temperature = 0;
+            l3TempDisplay.textContent = `${gameState.l3.temperature}°C`;
+            l3TempDisplay.classList.remove('text-red-400', 'text-blue-400', 'text-white', 'temp-flicker-hot', 'temp-flicker-cold');
+            if (gameState.l3.temperature > 25) {
+                l3TempDisplay.classList.add('text-red-400', 'temp-flicker-hot');
+                setInsight("It's getting hot! High temperatures increase risk. Consider lowering your pump values.", 3);
+            } else if (gameState.l3.temperature < 15) {
+                l3TempDisplay.classList.add('text-blue-400', 'temp-flicker-cold');
+                 setInsight("A cold snap! Balloons are more stable. Can you capitalize on this opportunity for more profit?", 3);
+            } else {
+                 l3TempDisplay.classList.add('text-white');
+            }
+            gameState.l3.tempInterval = setTimeout(updateTemp, getRandomInt(3000, 8000));
+        };
+        updateTemp();
+    }
+    
+    function runL3Simulation() {
+         gameState.l3.interval = setInterval(() => {
+            const type = getL2RandomBalloon();
+            const config = BALLOON_CONFIG[type];
+            const strategyPumps = gameState.l3.strategy[type];
+            const tempDiff = gameState.l3.temperature - 20;
+            const percentChange = Math.round(tempDiff / 2);
+            let [min, max] = [...config.range];
+            min = Math.max(1, Math.round(min * (1 - percentChange / 100)));
+            max = Math.max(min + 1, Math.round(max * (1 - percentChange / 100)));
+            const maxPumps = getRandomInt(min, max);
+            let yieldVal = 0;
+            if (strategyPumps > maxPumps) { gameState.l3.stats[type].pops++; } else { yieldVal = strategyPumps; gameState.l3.stats[type].yield += yieldVal; gameState.l3.totalYield += yieldVal; }
+            gameState.l3.stats[type].count++; gameState.l3.processedSinceChartUpdate++;
+            const balloonItem = document.createElement('div');
+            balloonItem.className = 'absolute top-1/2 left-1/2 conveyor-belt-item';
+            const balloonEl = document.createElement('div');
+            balloonEl.className = `balloon bg-${config.color}`;
+            balloonEl.style.transform = 'scale(0.5)'; balloonEl.style.color = `var(--tw-bg-${config.color})`;
+            balloonItem.appendChild(balloonEl);
+            if (yieldVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
+            l3Conveyor.appendChild(balloonItem);
+            setTimeout(() => { if (l3Conveyor.contains(balloonItem)) l3Conveyor.removeChild(balloonItem); }, 4000);
+            updateL3Stats();
+            if (gameState.l3.processedSinceChartUpdate % 10 === 0) { updateChart(gameState.l3); }
+             saveGameState(); // Save progress periodically in infinite mode
+         }, 300);
+    }
+    
+    function updateL3Stats() {
+        document.getElementById('l3-total-yield').textContent = gameState.l3.totalYield;
+        ['red', 'blue', 'green', 'yellow'].forEach(color => {
+            const stats = gameState.l3.stats[color];
+            document.getElementById(`l3-${color}-yield`).textContent = stats.yield;
+            const popRate = stats.count > 0 ? ((stats.pops / stats.count) * 100).toFixed(0) : 0;
+            document.getElementById(`l3-${color}-pop`).textContent = `${popRate}% pop`;
+        });
+    }
+
+    // --- Initial Event Listeners ---
+    homeBtn.addEventListener('click', goToLevelSelect);
+    startGameBtn.addEventListener('click', goToLevelSelect);
+    selectL1Btn.addEventListener('click', startLevel1);
+    selectL2Btn.addEventListener('click', startLevel2);
+    selectL3Btn.addEventListener('click', startLevel3);
+    resetProgressBtn.addEventListener('click', resetAllProgress);
+    l1PumpBtn.addEventListener('click', handleL1Pump);
+    l1BankBtn.addEventListener('click', handleL1Bank);
+    l2StartStopBtn.addEventListener('click', toggleL2Simulation);
+    setupL2Controls();
+    l3StartStopBtn.addEventListener('click', toggleL3Simulation);
+    setupL3Controls();
+    
+    // --- Load Game on Startup ---
+    window.onload = () => {
+        loadGameState();
+        // Reset any running simulations from a saved state
+        gameState.l2.isRunning = false;
+        gameState.l3.isRunning = false;
+    };
+
+</script>
+</body>
+</html>
+
+
