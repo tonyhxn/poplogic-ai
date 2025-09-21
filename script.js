@@ -1159,8 +1159,26 @@ function startLevel3() {
     showTutorialStep(L3_TUTORIAL_STEPS, 'l3');
 }
 
-function setupL3Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l3-${color}-pumps`); const valSpan = document.getElementById(`l3-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; updateL3Strategy(); }); }); }
+function setupL3Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l3-${color}-pumps`); const valSpan = document.getElementById(`l3-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; if (!gameState.l3.isRunning) updateL3Strategy(); }); }); }
 function updateL3Strategy() { ['red', 'blue', 'green', 'yellow'].forEach(color => { gameState.l3.strategy[color] = parseInt(document.getElementById(`l3-${color}-pumps`).value); }); }
+
+function disableL3Sliders() {
+    ['red', 'blue', 'green', 'yellow'].forEach(color => {
+        const slider = document.getElementById(`l3-${color}-pumps`);
+        slider.disabled = true;
+        slider.style.opacity = '0.5';
+        slider.style.cursor = 'not-allowed';
+    });
+}
+
+function enableL3Sliders() {
+    ['red', 'blue', 'green', 'yellow'].forEach(color => {
+        const slider = document.getElementById(`l3-${color}-pumps`);
+        slider.disabled = false;
+        slider.style.opacity = '1';
+        slider.style.cursor = 'pointer';
+    });
+}
 
 function toggleL3Simulation() {
     gameState.l3.isRunning = !gameState.l3.isRunning;
@@ -1168,12 +1186,15 @@ function toggleL3Simulation() {
         l3StartStopBtn.textContent = '⏸️ PAUSE PRODUCTION';
         l3StartStopBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
         l3StartStopBtn.classList.add('bg-amber-500', 'hover:bg-amber-600');
+        updateL3Strategy();
+        disableL3Sliders();
         runL3Simulation();
         runL3TempChanges();
     } else {
         l3StartStopBtn.textContent = '🚀 START PRODUCTION';
         l3StartStopBtn.classList.add('bg-green-500', 'hover:bg-green-600');
         l3StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+        enableL3Sliders();
         clearInterval(gameState.l3.interval);
         clearTimeout(gameState.l3.tempInterval);
         hideWeatherEffects();
@@ -1480,6 +1501,9 @@ function resetL3Production() {
         l3StartStopBtn.textContent = '🚀 START PRODUCTION';
         l3StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
         l3StartStopBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+        
+        // Enable sliders after reset
+        enableL3Sliders();
         
         // Clear conveyor belt
         if (l3Conveyor) {
