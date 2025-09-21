@@ -395,6 +395,10 @@
             0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.1; }
             50% { transform: scale(1.1) rotate(180deg); opacity: 0.3; }
         }
+        @keyframes sunPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+        }
         .subtitle-slide {
             animation: subtitleSlide 0.6s ease-out 0.3s both;
         }
@@ -1752,21 +1756,21 @@
         
         // Update weather icon and status with more dramatic conditions
         if (temp > 35) {
-            weatherIcon.textContent = '🔥';
+            weatherIcon.innerHTML = '🔥<div class="sun-effect" style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: radial-gradient(circle, #FFD700, #FF8C00); border-radius: 50%; opacity: 0.9; animation: sunPulse 2s ease-in-out infinite;"></div>';
             weatherStatus.textContent = 'EXTREME HEAT - CRITICAL RISK';
             l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-red-600 animate-pulse';
             tempBar.style.width = '100%';
             tempBar.className = 'h-full bg-gradient-to-r from-red-500 to-red-700 transition-all duration-1000';
             showWeatherEffect('extreme-heat');
         } else if (temp > 30) {
-            weatherIcon.textContent = '🌡️';
+            weatherIcon.innerHTML = '🌡️<div class="sun-effect" style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: radial-gradient(circle, #FFA500, #FF6347); border-radius: 50%; opacity: 0.8; animation: sunPulse 2.5s ease-in-out infinite;"></div>';
             weatherStatus.textContent = 'Heat Wave - HIGH RISK';
             l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-red-500';
             tempBar.style.width = '90%';
             tempBar.className = 'h-full bg-gradient-to-r from-yellow-400 to-red-500 transition-all duration-1000';
             showWeatherEffect('heat');
         } else if (temp > 25) {
-            weatherIcon.textContent = '☀️';
+            weatherIcon.innerHTML = '☀️<div class="sun-effect" style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: radial-gradient(circle, #FFE135, #FFA500); border-radius: 50%; opacity: 0.7; animation: sunPulse 3s ease-in-out infinite;"></div>';
             weatherStatus.textContent = 'Warm - Moderate Risk';
             l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-orange-400';
             tempBar.style.width = '70%';
@@ -1826,122 +1830,9 @@
         
         effectDiv.classList.remove('hidden');
         
-        if (type === 'rain') {
-            // Light rain
-            for (let i = 0; i < 40; i++) {
-                setTimeout(() => {
-                    const drop = document.createElement('div');
-                    drop.className = 'rain-drop';
-                    drop.style.left = Math.random() * 100 + '%';
-                    drop.style.animationDelay = Math.random() * 2 + 's';
-                    effectDiv.appendChild(drop);
-                    setTimeout(() => drop.remove(), 2000);
-                }, i * 60);
-            }
-        } else if (type === 'storm') {
-            // Heavy storm with lightning
-            for (let i = 0; i < 80; i++) {
-                setTimeout(() => {
-                    const drop = document.createElement('div');
-                    drop.className = 'rain-drop';
-                    drop.style.left = Math.random() * 100 + '%';
-                    drop.style.animationDelay = Math.random() * 1 + 's';
-                    effectDiv.appendChild(drop);
-                    setTimeout(() => drop.remove(), 1500);
-                }, i * 30);
-            }
-            
-            // Add storm clouds
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    const cloud = document.createElement('div');
-                    cloud.className = 'storm-cloud';
-                    cloud.style.top = Math.random() * 20 + '%';
-                    cloud.style.left = Math.random() * 100 + '%';
-                    effectDiv.appendChild(cloud);
-                    setTimeout(() => cloud.remove(), 3000);
-                }, i * 1000);
-            }
-            
-            // Add lightning
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    const lightning = document.createElement('div');
-                    lightning.className = 'lightning';
-                    lightning.style.left = Math.random() * 100 + '%';
-                    lightning.style.top = Math.random() * 50 + '%';
-                    effectDiv.appendChild(lightning);
-                    setTimeout(() => lightning.remove(), 100);
-                }, i * 2000);
-            }
-        } else if (type === 'snow') {
-            // Light snow
-            for (let i = 0; i < 25; i++) {
-                setTimeout(() => {
-                    const flake = document.createElement('div');
-                    flake.className = 'snow-flake';
-                    flake.textContent = '❄';
-                    flake.style.left = Math.random() * 100 + '%';
-                    flake.style.animationDelay = Math.random() * 3 + 's';
-                    effectDiv.appendChild(flake);
-                    setTimeout(() => flake.remove(), 4000);
-                }, i * 120);
-            }
-        } else if (type === 'blizzard') {
-            // Heavy blizzard with ice crystals
-            for (let i = 0; i < 60; i++) {
-                setTimeout(() => {
-                    const flake = document.createElement('div');
-                    flake.className = 'snow-flake';
-                    flake.textContent = '❄';
-                    flake.style.left = Math.random() * 100 + '%';
-                    flake.style.animationDelay = Math.random() * 2 + 's';
-                    effectDiv.appendChild(flake);
-                    setTimeout(() => flake.remove(), 3000);
-                }, i * 50);
-            }
-            
-            // Add ice crystals
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    const crystal = document.createElement('div');
-                    crystal.className = 'ice-crystal';
-                    crystal.style.left = Math.random() * 100 + '%';
-                    crystal.style.animationDelay = Math.random() * 2 + 's';
-                    effectDiv.appendChild(crystal);
-                    setTimeout(() => crystal.remove(), 3000);
-                }, i * 150);
-            }
-        } else if (type === 'heat') {
-            // Moderate heat waves
-            for (let i = 0; i < 15; i++) {
-                setTimeout(() => {
-                    const wave = document.createElement('div');
-                    wave.className = 'heat-wave';
-                    wave.style.top = Math.random() * 100 + '%';
-                    wave.style.animationDelay = Math.random() * 2 + 's';
-                    effectDiv.appendChild(wave);
-                    setTimeout(() => wave.remove(), 2000);
-                }, i * 300);
-            }
-        } else if (type === 'extreme-heat') {
-            // Extreme heat with distortion
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const wave = document.createElement('div');
-                    wave.className = 'heat-wave';
-                    wave.style.top = Math.random() * 100 + '%';
-                    wave.style.animationDelay = Math.random() * 1 + 's';
-                    effectDiv.appendChild(wave);
-                    setTimeout(() => wave.remove(), 1500);
-                }, i * 100);
-            }
-            
-            // Add heat distortion overlay
-            const distortion = document.createElement('div');
-            distortion.className = 'heat-distortion';
-            effectDiv.appendChild(distortion);
-        }
+        // Start continuous weather animation
+        startContinuousWeatherEffect(type, effectDiv);
+        
     }
     
     function hideWeatherEffects() {
@@ -1951,6 +1842,66 @@
         document.getElementById('rain-drops').innerHTML = '';
         document.getElementById('snow-flakes').innerHTML = '';
         document.getElementById('heat-waves').innerHTML = '';
+        // Clear any ongoing weather intervals
+        if (gameState.l3.weatherInterval) {
+            clearInterval(gameState.l3.weatherInterval);
+            gameState.l3.weatherInterval = null;
+        }
+    }
+    
+    function startContinuousWeatherEffect(type, effectDiv) {
+        // Clear any existing weather interval
+        if (gameState.l3.weatherInterval) {
+            clearInterval(gameState.l3.weatherInterval);
+        }
+        
+        // Start continuous weather based on type
+        if (type === 'rain') {
+            gameState.l3.weatherInterval = setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'rain-drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDelay = Math.random() * 2 + 's';
+                effectDiv.appendChild(drop);
+                setTimeout(() => drop.remove(), 2000);
+            }, 100);
+        } else if (type === 'storm') {
+            gameState.l3.weatherInterval = setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'rain-drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDelay = Math.random() * 1 + 's';
+                effectDiv.appendChild(drop);
+                setTimeout(() => drop.remove(), 1500);
+            }, 50);
+        } else if (type === 'snow') {
+            gameState.l3.weatherInterval = setInterval(() => {
+                const flake = document.createElement('div');
+                flake.className = 'snow-flake';
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.animationDelay = Math.random() * 3 + 's';
+                effectDiv.appendChild(flake);
+                setTimeout(() => flake.remove(), 4000);
+            }, 200);
+        } else if (type === 'blizzard') {
+            gameState.l3.weatherInterval = setInterval(() => {
+                const flake = document.createElement('div');
+                flake.className = 'snow-flake';
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.animationDelay = Math.random() * 1 + 's';
+                effectDiv.appendChild(flake);
+                setTimeout(() => flake.remove(), 2000);
+            }, 80);
+        } else if (type === 'heat' || type === 'extreme-heat') {
+            gameState.l3.weatherInterval = setInterval(() => {
+                const wave = document.createElement('div');
+                wave.className = 'heat-wave';
+                wave.style.left = Math.random() * 100 + '%';
+                wave.style.animationDelay = Math.random() * 2 + 's';
+                effectDiv.appendChild(wave);
+                setTimeout(() => wave.remove(), 3000);
+            }, 150);
+        }
     }
     
     function runL3TempChanges() {
