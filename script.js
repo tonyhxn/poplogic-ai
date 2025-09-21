@@ -117,8 +117,8 @@ function getDefaultGameState() {
         // Level progression tracking
         unlockedLevels: 1,
         
-        // Tutorial progress for each level
-        tutorial: { l1: 0, l2: 0 },
+            // Tutorial progress for each level
+            tutorial: { l1: 0, l2: 0, l3: 0 },
         // LEVEL 1: Pattern Recognition & Data Bias Detection
         l1: { 
             stats: {},           // Personal performance statistics per color
@@ -165,7 +165,7 @@ function loadGameState() {
     const savedState = localStorage.getItem('popLogicState');
     if (savedState) {
         gameState = JSON.parse(savedState);
-        if (!gameState.tutorial) gameState.tutorial = { l1: 0, l2: 0 };
+        if (!gameState.tutorial) gameState.tutorial = { l1: 0, l2: 0, l3: 0 };
         if (!gameState.l1.bestScore) gameState.l1.bestScore = 0;
         if (!gameState.l2.pastStrategies) gameState.l2.pastStrategies = [];
     } else {
@@ -318,6 +318,12 @@ function createExplosion(container, color) {
 const tutorialHighlight = document.getElementById('tutorial-highlight');
 
 function showTutorialStep(steps, level) {
+    // Ensure tutorial level exists in game state
+    if (!gameState.tutorial[level]) {
+        gameState.tutorial[level] = 0;
+        saveGameState();
+    }
+    
     const stepIndex = gameState.tutorial[level];
     if (stepIndex >= steps.length) {
         tutorialOverlay.style.display = 'none';
@@ -1117,6 +1123,17 @@ function endLevel2(isReview = false) {
     l2StartStopBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
     l2StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
     enableL2Sliders();
+    
+    // Complete the tutorial if it's still in progress to prevent conflicts
+    if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) {
+        gameState.tutorial.l2 = L2_TUTORIAL_STEPS.length;
+        saveGameState();
+    }
+    
+    // Hide tutorial overlay if it's showing to prevent conflicts with modal
+    if (tutorialOverlay) {
+        tutorialOverlay.style.display = 'none';
+    }
     
     // Show completion modal instead of summary area
     l2CompletionModal.classList.remove('hidden');
