@@ -3,18 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pop Logic</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Pop Logic - AI Literacy Educational Game</title>
+    
+    <!-- External Dependencies for AI Visualization -->
+    <script src="https://cdn.tailwindcss.com"></script>  <!-- CSS Framework for responsive design -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <!-- Chart.js for AI performance visualization -->
+    
+    <!-- Google Fonts for professional typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
+        /* ===========================================
+           AI LITERACY GAME - CORE STYLING
+           ===========================================
+           This educational game teaches AI concepts through interactive balloon factory simulation.
+           Key AI concepts implemented:
+           - Pattern Recognition (Level 1)
+           - Human-in-the-Loop (Level 2) 
+           - AI Temperature Control (Level 3)
+           - Data Bias Detection
+           - Model Training Simulation
+        */
+        
+        /* Global App Styling - Professional AI Interface */
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: #12285a !important; /* Dark Navy Blue */
+            background-color: #12285a !important; /* Dark Navy Blue - Professional AI theme */
         }
         .screen {
             display: none;
@@ -27,6 +44,15 @@
         .active-screen {
             display: flex;
         }
+        /* ===========================================
+           BALLOON VISUALIZATION - AI DATA REPRESENTATION
+           ===========================================
+           Balloons represent data points in AI training:
+           - Different colors = different data types/features
+           - Pumping = feature engineering/parameter tuning
+           - Popping = model failure/overfitting
+           - Yield = model performance metrics
+        */
         .balloon {
             width: 80px;
             height: 90px;
@@ -34,6 +60,7 @@
             transition: transform 0.2s ease-out;
             cursor: pointer;
             position: relative;
+            /* 3D effect simulating data point visualization */
             background-image: 
                 radial-gradient(circle at 25% 25%, rgba(255,255,255,0.8), rgba(255,255,255,0.3) 40%, rgba(255,255,255,0) 70%),
                 radial-gradient(circle at 70% 30%, rgba(255,255,255,0.4), rgba(255,255,255,0) 50%);
@@ -489,9 +516,17 @@
     </button>
 
 
-    <!-- Main Menu Screen -->
+    <!-- ===========================================
+         MAIN MENU SCREEN - AI LITERACY GAME ENTRANCE
+         ===========================================
+         This is the landing page that introduces students to AI concepts
+         through the metaphor of a balloon factory. The factory theme makes
+         complex AI concepts accessible and engaging for Years 7-10 students.
+    -->
     <div id="main-menu" class="screen active-screen flex-col justify-center items-center p-4 text-center" style="padding-top: 80px; padding-bottom: 40px;">
+        <!-- Game Title with Balloon Visual Metaphor -->
         <h1 id="main-title" class="text-4xl md:text-7xl font-black mb-6 animated-title" style="line-height: 1.1;">POP LOGIC</h1>
+        <!-- Subtitle explaining the AI learning context -->
         <h2 id="main-subtitle" class="text-2xl md:text-3xl font-bold text-indigo-200 mb-6" style="margin-top: 1rem;">Welcome to the Balloon Factory</h2>
         
         <div class="max-w-4xl mb-8">
@@ -537,9 +572,19 @@
         </div>
     </div>
     
-    <!-- Level 1 Screen -->
+    <!-- ===========================================
+         LEVEL 1 SCREEN - PATTERN RECOGNITION & DATA BIAS
+         ===========================================
+         This level teaches fundamental AI concepts:
+         - Pattern Recognition: Students learn to identify patterns in balloon behavior
+         - Data Bias: Different colored balloons have different characteristics
+         - Statistical Analysis: Personal stats help students understand data patterns
+         - Risk Assessment: Learning when to stop pumping vs. when to continue
+         - Global vs. Personal Data: Understanding that aggregate data can be misleading
+    -->
     <div id="level-1" class="screen flex-col justify-center items-center p-4" style="padding-top: 120px;">
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+            <!-- Interactive Game Area - Pattern Recognition Training -->
             <div id="l1-game-area" class="flex-grow lg:w-3/5 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center justify-between">
                  <div id="l1-history-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 w-full mb-4">
                     <h3 class="text-lg font-bold mb-2 text-center text-indigo-200">Last 8 Balloons</h3>
@@ -589,9 +634,20 @@
         </div>
     </div>
     
-    <!-- Level 2 Screen -->
+    <!-- ===========================================
+         LEVEL 2 SCREEN - HUMAN-IN-THE-LOOP AI TRAINING
+         ===========================================
+         This level teaches advanced AI concepts:
+         - AI Model Training: Students configure AI parameters (pump settings)
+         - Human-in-the-Loop: Students can pause and adjust AI behavior mid-simulation
+         - Performance Monitoring: Real-time visualization of AI performance metrics
+         - Strategy Optimization: Learning to improve AI based on performance data
+         - Data Processing: Simulating how AI processes large datasets (100 balloons)
+         - Model Evaluation: Understanding success rates and failure patterns
+    -->
     <div id="level-2" class="screen flex-col justify-center items-center p-4" style="padding-top: 120px;">
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+            <!-- AI Control Panel - Human-in-the-Loop Interface -->
             <div id="l2-control-panel" class="lg:w-1/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
                 <!-- Balloon Animation Simulation (moved here, smaller) -->
                 <div id="l2-simulation-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 flex flex-col items-center mb-6">
@@ -658,13 +714,24 @@
         </div>
     </div>
     
-    <!-- Level 3 Screen -->
+    <!-- ===========================================
+         LEVEL 3 SCREEN - AI TEMPERATURE CONTROL & CREATIVITY
+         ===========================================
+         This level teaches advanced AI concepts:
+         - AI Temperature: Controls creativity vs. stability in AI models
+         - Environmental Factors: Weather represents external conditions affecting AI
+         - Dynamic Adaptation: AI must adapt to changing conditions
+         - Risk vs. Reward: Higher temperature = more creative but risky outputs
+         - Continuous Learning: Infinite production simulates real-world AI deployment
+         - Pattern Recognition: Students learn to recognize temperature effects
+         - Model Tuning: Adjusting parameters based on environmental conditions
+    -->
     <div id="level-3" class="screen flex-col justify-center items-center p-4">
-        <!-- Weather Effects Container -->
+        <!-- Weather Effects Container - Visual representation of AI temperature -->
         <div id="weather-effects" class="fixed inset-0 pointer-events-none z-0">
-            <div id="rain-drops" class="absolute inset-0 hidden"></div>
-            <div id="snow-flakes" class="absolute inset-0 hidden"></div>
-            <div id="heat-waves" class="absolute inset-0 hidden"></div>
+            <div id="rain-drops" class="absolute inset-0 hidden"></div>  <!-- Low temperature = stable -->
+            <div id="snow-flakes" class="absolute inset-0 hidden"></div>  <!-- Very low temperature = conservative -->
+            <div id="heat-waves" class="absolute inset-0 hidden"></div>  <!-- High temperature = creative/risky -->
         </div>
         
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 relative z-10">
@@ -696,6 +763,10 @@
                 
                 <div class="mt-6">
                     <button id="l3-start-stop-btn" class="btn bg-green-500 hover:bg-green-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">🚀 START PRODUCTION</button>
+                    
+                    <button id="l3-reset-production-btn" class="btn bg-red-500 hover:bg-red-600 w-full text-white font-bold py-3 px-6 rounded-xl text-md shadow-md mt-3">
+                        🔄 Reset Production
+                    </button>
                 </div>
                 
                 <div class="pt-8">
@@ -772,7 +843,53 @@
     </div>
 
     <script>
-    // --- DOM Elements ---
+    /* ===========================================
+       POP LOGIC - AI LITERACY EDUCATIONAL GAME
+       ===========================================
+       
+       This JavaScript implements a comprehensive AI literacy educational game
+       that teaches students in Years 7-10 about fundamental AI concepts through
+       interactive gameplay. The game uses a balloon factory metaphor to make
+       complex AI concepts accessible and engaging.
+       
+       KEY AI CONCEPTS IMPLEMENTED:
+       ============================
+       1. PATTERN RECOGNITION (Level 1)
+          - Students learn to identify patterns in balloon behavior
+          - Different colored balloons have different characteristics
+          - Teaches data analysis and statistical thinking
+          
+       2. DATA BIAS DETECTION (Level 1)
+          - Global yield data can be misleading
+          - Personal experience vs. aggregate data
+          - Understanding bias in AI training data
+          
+       3. HUMAN-IN-THE-LOOP AI TRAINING (Level 2)
+          - Students configure AI parameters (pump settings)
+          - Can pause and adjust AI behavior mid-simulation
+          - Teaches the importance of human oversight in AI systems
+          
+       4. AI TEMPERATURE CONTROL (Level 3)
+          - Temperature controls creativity vs. stability
+          - Weather effects represent environmental conditions
+          - Teaches about AI parameter tuning and adaptation
+          
+       5. MODEL PERFORMANCE EVALUATION
+          - Real-time performance monitoring
+          - Success/failure rate analysis
+          - Strategy optimization based on data
+          
+       TECHNICAL IMPLEMENTATION:
+       =========================
+       - Pure JavaScript (no frameworks) for maximum compatibility
+       - Local storage for game state persistence
+       - Chart.js for data visualization
+       - CSS animations for engaging user experience
+       - Responsive design for various screen sizes
+       - WCAG accessibility compliance
+    */
+    
+    // --- DOM Elements - Game Interface Components ---
     const screens = document.querySelectorAll('.screen');
     const homeBtn = document.getElementById('home-btn');
     const helpBtn = document.getElementById('help-btn');
@@ -793,25 +910,86 @@
 
 
     // --- Game Config ---
+    /* ===========================================
+       AI TRAINING DATA CONFIGURATION
+       ===========================================
+       This configuration defines the characteristics of different data types
+       (represented as balloon colors) that the AI must learn to process.
+       Each color represents a different type of input data with varying
+       complexity and risk levels - simulating real-world AI training scenarios.
+    */
     const BALLOON_CONFIG = {
+        // RED BALLOONS: High-value, moderate risk data
+        // Represents important but predictable data patterns
         red: { color: 'red-500', range: [6, 12], chartColor: '#EF4444' },
+        
+        // BLUE BALLOONS: Low-risk, consistent data
+        // Represents reliable, stable data patterns
         blue: { color: 'blue-400', range: [4, 6], chartColor: '#60A5FA' },
+        
+        // GREEN BALLOONS: Variable risk data
+        // Represents data with moderate unpredictability
         green: { color: 'green-400', range: [2, 8], chartColor: '#4ADE80' },
+        
+        // YELLOW BALLOONS: High-risk, unpredictable data
+        // Represents noisy, unreliable data that can mislead AI
         yellow: { color: 'yellow-400', range: [1, 20], chartColor: '#FBBF24' },
     };
 
+    /* ===========================================
+       LEVEL 1 TRAINING SEQUENCE - PATTERN RECOGNITION
+       ===========================================
+       This sequence is designed to teach pattern recognition:
+       1. Start with 4 red balloons (high-value, predictable) - builds confidence
+       2. Follow with 4 blue balloons (low-risk, consistent) - reinforces patterns
+       3. Mix with green and yellow (variable/unpredictable) - challenges assumptions
+       This simulates how AI learns from structured training data.
+    */
     const L1_SEQUENCE = ['red', 'red', 'red', 'red', 'blue', 'blue', 'blue', 'blue', 'green', 'red', 'blue', 'green', 'red', 'blue', 'green'];
     
-    // --- Game State ---
+    // --- Game State Management - AI Learning Progress Tracking ---
     let gameState;
 
+    /* ===========================================
+       GAME STATE STRUCTURE - AI LEARNING TRACKING
+       ===========================================
+       This function defines the complete state structure for tracking
+       AI learning progress across all levels. Each level represents
+       a different aspect of AI literacy education.
+    */
     function getDefaultGameState() {
         return {
+            // Level progression tracking
             unlockedLevels: 1,
+            
+            // Tutorial progress for each level
             tutorial: { l1: 0, l2: 0 },
-            l1: { stats: {}, balloonIndex: 0, history: [], isPopping: false, strategy: {}, bestScore: 0 },
-            l2: { stats: {}, processedCount: 0, strategy: {}, pastStrategies: [] },
-            l3: { stats: {}, totalScore: 0, processedSinceChartUpdate: 0, temperature: 20, strategy: {} }
+            // LEVEL 1: Pattern Recognition & Data Bias Detection
+            l1: { 
+                stats: {},           // Personal performance statistics per color
+                balloonIndex: 0,     // Current position in training sequence
+                history: [],         // Last 8 balloon interactions for pattern analysis
+                isPopping: false,    // Animation state control
+                strategy: {},        // Player's learned strategies
+                bestScore: 0         // Best performance tracking
+            },
+            
+            // LEVEL 2: Human-in-the-Loop AI Training
+            l2: { 
+                stats: {},           // AI performance metrics per color
+                processedCount: 0,   // Number of balloons processed by AI
+                strategy: {},        // AI configuration parameters (pump settings)
+                pastStrategies: []  // Historical AI strategies for comparison
+            },
+            
+            // LEVEL 3: AI Temperature Control & Environmental Adaptation
+            l3: { 
+                stats: {},           // AI performance under different conditions
+                totalScore: 0,       // Cumulative score across all conditions
+                processedSinceChartUpdate: 0,  // Chart update frequency control
+                temperature: 20,     // Current AI temperature (affects creativity/stability)
+                strategy: {}         // AI parameters adapted to environmental conditions
+            }
         };
     }
 
@@ -1082,7 +1260,15 @@
         tutorialOverlay.style.display = 'none';
     }
 
+    /* ===========================================
+       LEVEL 1 TUTORIAL STEPS - PATTERN RECOGNITION EDUCATION
+       ===========================================
+       These tutorial steps guide students through fundamental AI concepts
+       using the balloon factory metaphor. Each step builds understanding
+       of how AI systems learn from data and make decisions.
+    */
     const L1_TUTORIAL_STEPS = [
+        // Step 1: Basic interaction mechanics
         { element: '#l1-game-area', title: 'Welcome to Training!', text: "Your goal is simple: PUMP the balloon to increase its value, but CASH OUT the score before it pops!"},
         { element: '#global-banner', title: 'Global Player Data', text: "Here's what players around the world are earning. This data might offer a clue... or it might show you a biased strategy. An AI must learn to evaluate if external data is useful or misleading. Should you trust it?"},
         { element: '#l1-data-panel', title: 'Your Personal Data', text: "As you play, your results will appear here. This is your AI's 'memory'. Use it to learn the balloon behaviors."},
@@ -1091,14 +1277,31 @@
         { element: '#l1-data-panel .text-green-400', title: 'Noisy Data!', text: "Watch out! Green balloons are highly unpredictable. In AI, this is called 'noisy data', and it's very difficult to make accurate predictions from it."},
         { element: 'body', title: 'You are ready to begin!', text: "You've learned the basics! Time to test your knowledge. Good luck!"},
     ];
-     const L2_TUTORIAL_STEPS = [
+    /* ===========================================
+       LEVEL 2 TUTORIAL STEPS - HUMAN-IN-THE-LOOP AI TRAINING
+       ===========================================
+       These steps teach students about AI model training and the critical
+       role of human oversight in AI systems. Students learn to configure
+       AI parameters and monitor performance in real-time.
+    */
+    const L2_TUTORIAL_STEPS = [
+        // Step 1: AI parameter configuration
         { element: '#l2-control-panel', title: 'Build Your AI!', text: "Now you're the teacher. Use the sliders to set rules for your AI based on what you learned in Level 1. The AI will automatically cash in after this many pumps of each balloon type."},
         { element: 'body', title: 'AI Insights', text: "This section will show you real-time insights about your AI's performance. Watch for patterns and learn from the data to improve your strategy!"},
         { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the performance monitor to see how it performs."},
         { element: '#l2-start-stop-btn', title: 'Human-in-the-Loop', text: "Things not going well? You can PAUSE the simulation at any time to adjust your AI's rules. This is your role as a Human Supervisor!"},
     ];
     
+    /* ===========================================
+       LEVEL 3 TUTORIAL STEPS - AI TEMPERATURE CONTROL EDUCATION
+       ===========================================
+       These steps teach students about AI temperature - a crucial parameter
+       that controls creativity vs. stability in AI models. Students learn
+       to recognize how environmental conditions affect AI behavior and
+       how to adapt AI parameters accordingly.
+    */
     const L3_TUTORIAL_STEPS = [
+        // Step 1: Introduction to AI temperature concept
         { element: '#level-3 .bg-gradient-to-br', title: '🌡️ AI Temperature Control', text: "Welcome to the Production Floor! Here you'll learn about <strong>AI Temperature</strong> - one of the most important concepts in modern AI. Temperature controls how 'creative' or 'conservative' your AI behaves."},
         { element: '#l3-temp-display', title: 'Temperature Display', text: "This shows the current factory temperature. In AI terms, <strong>low temperature = stable, predictable behavior</strong> while <strong>high temperature = creative, risky behavior</strong>. Watch how it affects balloon stability!"},
         { element: '#l3-start-stop-btn', title: '🚀 Start Production', text: "Click this to begin continuous balloon production. Your AI will process balloons forever, but the weather will change every 15-60 seconds, affecting balloon behavior!"},
@@ -1193,12 +1396,38 @@
         }).join('');
     }
 
+    /* ===========================================
+       LEVEL 1: PATTERN RECOGNITION GAMEPLAY
+       ===========================================
+       These functions implement the core pattern recognition mechanics
+       that teach students how AI systems learn from data patterns.
+    */
+    
+    /**
+     * Handles balloon pumping - simulates AI parameter tuning
+     * Each pump increases the potential reward but also the risk
+     * This teaches students about risk vs. reward in AI decision-making
+     */
     function handleL1Pump() {
-        if (gameState.l1.isPopping) return;
+        if (gameState.l1.isPopping) return; // Prevent interaction during animation
+        
+        // Visual feedback for user interaction
         const balloonEl = l1BalloonArea.querySelector('.balloon');
-        if (balloonEl) { balloonEl.classList.remove('pump-jiggle'); void balloonEl.offsetWidth; balloonEl.classList.add('pump-jiggle'); }
+        if (balloonEl) { 
+            balloonEl.classList.remove('pump-jiggle'); 
+            void balloonEl.offsetWidth; // Force reflow
+            balloonEl.classList.add('pump-jiggle'); 
+        }
+        
+        // Increment pump count (simulating AI parameter adjustment)
         gameState.l1.currentPumps++;
-        if (gameState.l1.currentPumps > gameState.l1.currentBalloon.maxPumps) { handleL1Pop(); } else { renderL1(); }
+        
+        // Check if balloon exceeds maximum capacity (AI overfitting/overconfidence)
+        if (gameState.l1.currentPumps > gameState.l1.currentBalloon.maxPumps) { 
+            handleL1Pop(); // Balloon pops - AI failure
+        } else { 
+            renderL1(); // Update display - continue learning
+        }
     }
 
     function handleL1Bank() {
@@ -1646,16 +1875,46 @@
 
     function getL2RandomBalloon() { const rand = Math.random(); if (rand < 0.3) return 'red'; if (rand < 0.6) return 'blue'; if (rand < 0.8) return 'green'; return 'yellow'; }
 
+    /* ===========================================
+       LEVEL 2: HUMAN-IN-THE-LOOP AI SIMULATION
+       ===========================================
+       This function simulates AI model training and deployment,
+       teaching students about automated decision-making and
+       the importance of human oversight in AI systems.
+    */
+    
+    /**
+     * Runs the AI simulation - processes 100 balloons using configured strategy
+     * This simulates how AI models process large datasets automatically
+     * Students learn about AI performance monitoring and optimization
+     */
     function runL2Simulation() {
         gameState.l2.interval = setInterval(() => {
+            // Stop after processing 100 balloons (simulating batch processing)
             if (gameState.l2.processedCount >= 100) { endLevel2(); return; }
+            
+            // Select random balloon type (simulating diverse input data)
             const type = getL2RandomBalloon();
             const config = BALLOON_CONFIG[type];
+            
+            // Generate random maximum capacity (simulating data variability)
             const maxPumps = getRandomInt(...config.range);
+            
+            // Apply AI strategy (simulating model prediction)
             const strategyPumps = gameState.l2.strategy[type];
+            
+            // Calculate result (simulating model performance evaluation)
             let scoreVal = 0;
-            if (strategyPumps > maxPumps) { gameState.l2.stats[type].pops++; } else { scoreVal = strategyPumps; gameState.l2.stats[type].score += scoreVal; }
-            gameState.l2.stats[type].count++; gameState.l2.processedCount++;
+            if (strategyPumps > maxPumps) { 
+                gameState.l2.stats[type].pops++; // AI overconfidence - model failure
+            } else { 
+                scoreVal = strategyPumps; 
+                gameState.l2.stats[type].score += scoreVal; // Successful prediction
+            }
+            
+            // Update statistics (simulating performance monitoring)
+            gameState.l2.stats[type].count++; 
+            gameState.l2.processedCount++;
             
             // Update earned amount
             gameState.l2.totalEarned = (gameState.l2.totalEarned || 0) + scoreVal;
@@ -1904,10 +2163,28 @@
         }
     }
     
+    /* ===========================================
+       LEVEL 3: AI TEMPERATURE CONTROL SYSTEM
+       ===========================================
+       This function implements AI temperature control mechanics,
+       teaching students how environmental conditions affect AI behavior
+       and the importance of adaptive AI systems.
+    */
+    
+    /**
+     * Manages AI temperature changes - simulates environmental conditions
+     * affecting AI model behavior. Temperature directly impacts:
+     * - Creativity vs. Stability (high temp = creative/risky, low temp = stable/conservative)
+     * - Model confidence and decision-making
+     * - Risk tolerance and output variability
+     */
     function runL3TempChanges() {
         const updateTemp = () => {
+            // Random temperature change (simulating environmental variability)
             const change = getRandomInt(-5, 5);
             gameState.l3.temperature += change;
+            
+            // Clamp temperature to realistic range (0-40°C)
             if (gameState.l3.temperature > 40) gameState.l3.temperature = 40;
             if (gameState.l3.temperature < 0) gameState.l3.temperature = 0;
             
@@ -1971,6 +2248,79 @@
         updatePerformanceMonitor('l3');
     }
 
+    function resetL3Production() {
+        if (confirm('Are you sure you want to reset production? This will stop the current production and reset all statistics.')) {
+            // Stop the simulation
+            if (gameState.l3.isRunning) {
+                toggleL3Simulation();
+            }
+            
+            // Clear intervals
+            if (gameState.l3.interval) {
+                clearInterval(gameState.l3.interval);
+                gameState.l3.interval = null;
+            }
+            if (gameState.l3.tempInterval) {
+                clearInterval(gameState.l3.tempInterval);
+                gameState.l3.tempInterval = null;
+            }
+            if (gameState.l3.weatherInterval) {
+                clearInterval(gameState.l3.weatherInterval);
+                gameState.l3.weatherInterval = null;
+            }
+            
+            // Reset Level 3 stats
+            gameState.l3.totalScore = 0;
+            gameState.l3.processedCount = 0;
+            gameState.l3.temperature = 20;
+            gameState.l3.isRunning = false;
+            
+            // Reset individual color stats
+            Object.keys(gameState.l3.stats).forEach(color => {
+                gameState.l3.stats[color] = { score: 0, pumps: 0, count: 0, pops: 0 };
+            });
+            
+            // Reset strategy to default values
+            gameState.l3.strategy = { red: 8, blue: 5, green: 6, yellow: 10 };
+            
+            // Update UI
+            updateL3Stats();
+            updateWeatherDisplay();
+            updateL3Strategy();
+            
+            // Reset sliders to default values
+            document.getElementById('l3-red-pumps').value = 8;
+            document.getElementById('l3-blue-pumps').value = 5;
+            document.getElementById('l3-green-pumps').value = 6;
+            document.getElementById('l3-yellow-pumps').value = 10;
+            
+            // Update slider display values
+            document.getElementById('l3-red-val').textContent = '8';
+            document.getElementById('l3-blue-val').textContent = '5';
+            document.getElementById('l3-green-val').textContent = '6';
+            document.getElementById('l3-yellow-val').textContent = '10';
+            
+            // Reset button text
+            l3StartStopBtn.textContent = '🚀 START PRODUCTION';
+            l3StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            l3StartStopBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+            
+            // Clear conveyor belt
+            if (l3Conveyor) {
+                l3Conveyor.innerHTML = '';
+            }
+            
+            // Clear insights
+            const insightsElement = document.getElementById('l3-insights');
+            if (insightsElement) {
+                insightsElement.textContent = 'Production reset. Ready to start fresh!';
+            }
+            
+            // Save state
+            saveGameState();
+        }
+    }
+
     // --- Initial Event Listeners ---
     homeBtn.addEventListener('click', () => showScreen('main-menu'));
     helpBtn.addEventListener('click', () => {
@@ -2004,6 +2354,7 @@
     });
     setupL2Controls();
     l3StartStopBtn.addEventListener('click', toggleL3Simulation);
+    document.getElementById('l3-reset-production-btn').addEventListener('click', resetL3Production);
     setupL3Controls();
     
     // --- Custom Tooltip Event Listeners ---
@@ -2042,11 +2393,37 @@
         advanceTutorial(-1, steps, levelKey);
     });
     
+    /* ===========================================
+       GAME INITIALIZATION & STARTUP
+       ===========================================
+       The game initializes with comprehensive AI literacy education
+       through interactive gameplay. Students progress through three levels:
+       
+       1. PATTERN RECOGNITION (Level 1)
+          - Learn to identify data patterns
+          - Understand data bias and reliability
+          - Develop statistical thinking skills
+          
+       2. HUMAN-IN-THE-LOOP AI TRAINING (Level 2)
+          - Configure AI parameters
+          - Monitor AI performance in real-time
+          - Learn the importance of human oversight
+          
+       3. AI TEMPERATURE CONTROL (Level 3)
+          - Understand creativity vs. stability trade-offs
+          - Learn to adapt AI to changing conditions
+          - Experience continuous AI deployment scenarios
+          
+       This implementation demonstrates how complex AI concepts can be
+       made accessible and engaging for students in Years 7-10 through
+       gamification and visual metaphors.
+    */
+    
     // --- Load Game on Startup ---
     initGame();
     document.addEventListener('DOMContentLoaded', () => {
         initGame();
-        // Trigger initial title animation
+        // Trigger initial title animation for engaging user experience
         setTimeout(() => {
             animateTitlePage();
         }, 200);
