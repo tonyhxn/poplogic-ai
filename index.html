@@ -210,6 +210,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
     </button>
 
+
     <!-- Main Menu Screen -->
     <div id="main-menu" class="screen active-screen flex-col justify-center items-center p-4 text-center" style="padding-top: 80px; padding-bottom: 40px;">
         <h1 class="text-4xl md:text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-blue-400 to-green-400">Pop Logic</h1>
@@ -377,6 +378,10 @@
                  <button id="tutorial-next-btn" class="btn bg-indigo-500 hover:bg-indigo-600 flex-grow font-bold py-2 px-4 rounded-lg">Next</button>
             </div>
         </div>
+        <!-- Skip Tutorial Button -->
+        <button id="skip-tutorial-btn" class="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition z-[1002]">
+            Skip Tutorial
+        </button>
     </div>
 
 <script>
@@ -394,6 +399,7 @@
     const tutorialPrevBtn = document.getElementById('tutorial-prev-btn');
     const tutorialNextBtn = document.getElementById('tutorial-next-btn');
     const customTooltip = document.getElementById('custom-tooltip');
+    const skipTutorialBtn = document.getElementById('skip-tutorial-btn');
 
 
     // --- Game Config ---
@@ -615,6 +621,20 @@
          if(gameState.tutorial[level] < 0) gameState.tutorial[level] = 0;
          saveGameState();
          showTutorialStep(steps, level);
+    }
+
+    function skipTutorial() {
+        const activeScreenId = document.querySelector('.active-screen').id;
+        if (!activeScreenId.startsWith('level-')) return;
+        const levelKey = 'l' + activeScreenId.slice(-1);
+        
+        // Mark tutorial as completed for this level
+        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : L2_TUTORIAL_STEPS;
+        gameState.tutorial[levelKey] = steps.length;
+        saveGameState();
+        
+        // Hide tutorial overlay (skip button is part of overlay)
+        tutorialOverlay.style.display = 'none';
     }
 
     const L1_TUTORIAL_STEPS = [
@@ -1098,6 +1118,10 @@
     });
     selectL3Btn.addEventListener('mouseleave', hideTooltip);
     selectL3Btn.addEventListener('mousemove', updateTooltipPosition);
+    
+    // --- Skip Tutorial Event Listener ---
+    skipTutorialBtn.addEventListener('click', skipTutorial);
+    
     tutorialBox.addEventListener('click', (e) => e.stopPropagation());
     tutorialNextBtn.addEventListener('click', () => {
         const activeScreenId = document.querySelector('.active-screen').id;
