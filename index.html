@@ -315,7 +315,7 @@
     </div>
     
     <!-- Level 1 Screen -->
-    <div id="level-1" class="screen flex-col justify-center items-center p-4">
+    <div id="level-1" class="screen flex-col justify-center items-center p-4" style="padding-top: 120px;">
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
             <div id="l1-game-area" class="flex-grow lg:w-3/5 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center justify-between">
                  <div id="l1-history-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 w-full mb-4">
@@ -367,19 +367,33 @@
     </div>
     
     <!-- Level 2 Screen -->
-    <div id="level-2" class="screen flex-col justify-center items-center p-4">
+    <div id="level-2" class="screen flex-col justify-center items-center p-4" style="padding-top: 120px;">
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
             <div id="l2-control-panel" class="lg:w-1/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
                 <h3 class="text-xl font-bold mb-4 text-center">AI Strategy Rules</h3>
                 <div class="space-y-4">
-                    <div class="flex items-center gap-4"><label class="font-bold text-red-400 w-16">Red:</label><input type="range" id="l2-red-pumps" min="1" max="15" value="7" class="w-full"><span id="l2-red-val" class="font-mono w-8 text-center">7</span></div>
-                    <div class="flex items-center gap-4"><label class="font-bold text-blue-400 w-16">Blue:</label><input type="range" id="l2-blue-pumps" min="1" max="10" value="5" class="w-full"><span id="l2-blue-val" class="font-mono w-8 text-center">5</span></div>
-                    <div class="flex items-center gap-4"><label class="font-bold text-green-400 w-16">Green:</label><input type="range" id="l2-green-pumps" min="1" max="12" value="5" class="w-full"><span id="l2-green-val" class="font-mono w-8 text-center">5</span></div>
-                    <div class="flex items-center gap-4"><label class="font-bold text-yellow-400 w-16">Yellow:</label><input type="range" id="l2-yellow-pumps" min="1" max="25" value="8" class="w-full"><span id="l2-yellow-val" class="font-mono w-8 text-center">8</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-red-400 w-16">Red:</label><input type="range" id="l2-red-pumps" min="0" max="15" value="0" class="flex-1"><span id="l2-red-val" class="font-mono w-8 text-center">0</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-blue-400 w-16">Blue:</label><input type="range" id="l2-blue-pumps" min="0" max="15" value="0" class="flex-1"><span id="l2-blue-val" class="font-mono w-8 text-center">0</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-green-400 w-16">Green:</label><input type="range" id="l2-green-pumps" min="0" max="15" value="0" class="flex-1"><span id="l2-green-val" class="font-mono w-8 text-center">0</span></div>
+                    <div class="flex items-center gap-4"><label class="font-bold text-yellow-400 w-16">Yellow:</label><input type="range" id="l2-yellow-pumps" min="0" max="15" value="0" class="flex-1"><span id="l2-yellow-val" class="font-mono w-8 text-center">0</span></div>
                 </div>
                 <div class="mt-6">
                     <button id="l2-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">START SIMULATION</button>
                 </div>
+                
+                <!-- Past Strategies Section -->
+                <div id="l2-past-strategies" class="mt-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-indigo-200">Past Strategies</h3>
+                        <button id="l2-clear-all-strategies" class="text-xs bg-red-500/20 hover:bg-red-500/30 text-red-400 px-2 py-1 rounded transition">
+                            Clear All
+                        </button>
+                    </div>
+                    <div id="l2-strategies-list" class="space-y-3 max-h-48 overflow-y-auto">
+                        <!-- Past strategies will be populated here -->
+                    </div>
+                </div>
+                
                 <div id="l2-summary-area" class="w-full text-center hidden mt-auto pt-6">
                     <h3 class="text-2xl font-bold text-green-400">Simulation Complete!</h3>
                     <p class="text-indigo-200 my-4 max-w-xl mx-auto">By pausing and adjusting your AI, you acted as a Human-in-the-Loop. This is vital for safety and performance.</p>
@@ -388,13 +402,14 @@
                          <button id="l2-summary-replay-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Replay</button>
                     </div>
                 </div>
-                <div class="mt-auto pt-6">
-                    <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
-                    <p id="l2-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
-                </div>
             </div>
             <div id="l2-simulation-panel" class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center">
                 <h3 class="text-xl font-bold mb-2">Live Simulation Feed</h3>
+                <div class="flex justify-end mb-4">
+                    <button id="l2-skip-to-end-btn" class="text-sm bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 px-3 py-1 rounded transition hidden">
+                        Skip to End
+                    </button>
+                </div>
                 <p class="text-sm text-indigo-300 mb-4">Processed: <span id="l2-processed-count">0</span> / 100</p>
                 <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700">
                     <div id="l2-conveyor" class="absolute h-full w-full"></div>
@@ -496,7 +511,7 @@
             unlockedLevels: 1,
             tutorial: { l1: 0, l2: 0 },
             l1: { stats: {}, balloonIndex: 0, history: [], isPopping: false, strategy: {}, bestScore: 0 },
-            l2: { stats: {}, processedCount: 0, strategy: {} },
+            l2: { stats: {}, processedCount: 0, strategy: {}, pastStrategies: [] },
             l3: { stats: {}, totalScore: 0, processedSinceChartUpdate: 0, temperature: 20, strategy: {} }
         };
     }
@@ -520,6 +535,7 @@
             gameState = JSON.parse(savedState);
             if (!gameState.tutorial) gameState.tutorial = { l1: 0, l2: 0 };
             if (!gameState.l1.bestScore) gameState.l1.bestScore = 0;
+            if (!gameState.l2.pastStrategies) gameState.l2.pastStrategies = [];
         } else {
             gameState = getDefaultGameState();
         }
@@ -618,8 +634,9 @@
         screens.forEach(s => s.classList.remove('active-screen'));
         document.getElementById(screenId).classList.add('active-screen');
         const isLevelScreen = screenId.startsWith('level-');
+        const isLevelSelectScreen = screenId === 'level-select';
         homeBtn.style.display = isLevelScreen ? 'block' : 'none';
-        helpBtn.style.display = isLevelScreen ? 'block' : 'none';
+        helpBtn.style.display = (isLevelScreen && !isLevelSelectScreen) ? 'block' : 'none';
         
         // Trigger title page animation when showing main menu
         if (screenId === 'main-menu') {
@@ -707,6 +724,10 @@
             // Position to the right of the highlighting area
             boxLeft = rect.right + 20; // 20px to the right of the highlighted element
             boxTop = rect.top + (rect.height / 2) - 100; // Center vertically with highlighted element
+        } else if (step.title === "Live Simulation") {
+            // Position to the left of the highlighting area
+            boxLeft = rect.left - boxWidth - 20; // 20px to the left of the highlighted element
+            boxTop = rect.top + (rect.height / 2) - 100; // Center vertically with highlighted element
         } else {
             // Default positioning relative to target element
             boxLeft = rect.left + (rect.width / 2) - (boxWidth / 2);
@@ -767,6 +788,7 @@
     ];
      const L2_TUTORIAL_STEPS = [
         { element: '#l2-control-panel', title: 'Build Your AI!', text: "Now you're the teacher. Use the sliders to set rules for your AI based on what you learned in Level 1. The AI will automatically cash in after this many pumps of each balloon type."},
+        { element: 'body', title: 'AI Insights', text: "This section will show you real-time insights about your AI's performance. Watch for patterns and learn from the data to improve your strategy!"},
         { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the performance monitor to see how it performs."},
         { element: '#l2-start-stop-btn', title: 'Human-in-the-Loop', text: "Things not going well? You can PAUSE the simulation at any time to adjust your AI's rules. This is your role as a Human Supervisor!"},
     ];
@@ -981,7 +1003,7 @@
             document.getElementById('l2-start-stop-btn').style.display = 'block';
             buildPerformanceMonitor('l2');
             updateL2Stats();
-            setInsight("Set your AI's rules based on what you learned. Is your model ready for unseen 'yellow' data?", 2);
+            displayPastStrategies(); // Show past strategies
             showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
         }
     }
@@ -1028,34 +1050,251 @@
             const perfPercent = Math.min(100, (avgScore / maxAvg) * 100);
 
             bar.style.width = `${perfPercent}%`;
-            if (popRate > 50 || avgScore < 1) {
-                bar.className = 'performance-bar-inner bg-red-500';
-            } else if (popRate > 25) {
-                bar.className = 'performance-bar-inner bg-yellow-500';
-            } else {
-                 bar.className = 'performance-bar-inner bg-green-500';
+            // Use balloon colors instead of performance colors
+            if (color === 'red') {
+                bar.className = 'performance-bar-inner bg-red-400';
+            } else if (color === 'blue') {
+                bar.className = 'performance-bar-inner bg-blue-400';
+            } else if (color === 'green') {
+                bar.className = 'performance-bar-inner bg-green-400';
+            } else if (color === 'yellow') {
+                bar.className = 'performance-bar-inner bg-yellow-400';
             }
          });
     }
 
     function setupL2Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l2-${color}-pumps`); const valSpan = document.getElementById(`l2-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; if (!gameState.l2.isRunning) updateL2Strategy(); }); }); }
     function updateL2Strategy() { ['red', 'blue', 'green', 'yellow'].forEach(color => { gameState.l2.strategy[color] = parseInt(document.getElementById(`l2-${color}-pumps`).value); }); }
+    
+    function disableL2Sliders() {
+        ['red', 'blue', 'green', 'yellow'].forEach(color => {
+            const slider = document.getElementById(`l2-${color}-pumps`);
+            slider.disabled = true;
+            slider.style.opacity = '0.5';
+            slider.style.cursor = 'not-allowed';
+        });
+    }
+    
+    function enableL2Sliders() {
+        ['red', 'blue', 'green', 'yellow'].forEach(color => {
+            const slider = document.getElementById(`l2-${color}-pumps`);
+            slider.disabled = false;
+            slider.style.opacity = '1';
+            slider.style.cursor = 'pointer';
+        });
+    }
+    
+    function resetL2Simulation() {
+        // Reset processed count
+        gameState.l2.processedCount = 0;
+        
+        // Reset stats
+        const statsTemplate = { score: 0, pops: 0, count: 0, pumps: 0 };
+        gameState.l2.stats = {
+            red: {...statsTemplate},
+            blue: {...statsTemplate},
+            green: {...statsTemplate},
+            yellow: {...statsTemplate}
+        };
+        
+        // Clear conveyor belt
+        const conveyor2 = document.getElementById('l2-conveyor');
+        if (conveyor2) {
+            conveyor2.innerHTML = '';
+        }
+        
+        // Update display
+        updateL2Stats();
+        updatePerformanceMonitor('l2');
+    }
+    
+    function saveL2Strategy() {
+        // Calculate performance summary
+        const performance = {};
+        let totalScore = 0;
+        let totalPops = 0;
+        let totalCount = 0;
+        
+        ['red', 'blue', 'green', 'yellow'].forEach(color => {
+            const stats = gameState.l2.stats[color];
+            const avgScore = stats.count > 0 ? (stats.score / stats.count) : 0;
+            const popRate = stats.count > 0 ? (stats.pops / stats.count) * 100 : 0;
+            
+            performance[color] = {
+                avgScore: avgScore,
+                popRate: popRate,
+                count: stats.count
+            };
+            
+            totalScore += stats.score;
+            totalPops += stats.pops;
+            totalCount += stats.count;
+        });
+        
+        const overallPopRate = totalCount > 0 ? (totalPops / totalCount) * 100 : 0;
+        const overallAvgScore = totalCount > 0 ? totalScore / totalCount : 0;
+        
+        // Create strategy record
+        const strategyRecord = {
+            timestamp: Date.now(),
+            strategy: { ...gameState.l2.strategy },
+            performance: performance,
+            overallPopRate: overallPopRate,
+            overallAvgScore: overallAvgScore,
+            totalProcessed: gameState.l2.processedCount
+        };
+        
+        // Add to past strategies (keep only last 3)
+        if (!gameState.l2.pastStrategies) {
+            gameState.l2.pastStrategies = [];
+        }
+        gameState.l2.pastStrategies.unshift(strategyRecord);
+        if (gameState.l2.pastStrategies.length > 3) {
+            gameState.l2.pastStrategies = gameState.l2.pastStrategies.slice(0, 3);
+        }
+        
+        // Save to localStorage
+        saveGameState();
+        
+        // Update display
+        displayPastStrategies();
+    }
+    
+    function displayPastStrategies() {
+        const strategiesList = document.getElementById('l2-strategies-list');
+        if (!strategiesList || !gameState.l2.pastStrategies) return;
+        
+        if (gameState.l2.pastStrategies.length === 0) {
+            strategiesList.innerHTML = '<p class="text-center text-indigo-400 text-sm">No past strategies yet</p>';
+            return;
+        }
+        
+        strategiesList.innerHTML = gameState.l2.pastStrategies.map((strategy, index) => {
+            const strategyNum = gameState.l2.pastStrategies.length - index;
+            const timeAgo = Math.round((Date.now() - strategy.timestamp) / 1000);
+            
+            return `
+                <div class="bg-indigo-900/30 p-3 rounded-lg border border-indigo-600">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-bold text-indigo-200">Strategy ${strategyNum}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-indigo-400">${timeAgo}s ago</span>
+                            <button class="delete-strategy-btn text-xs bg-red-500/20 hover:bg-red-500/30 text-red-400 px-2 py-1 rounded transition" data-index="${index}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-xs text-indigo-300 mb-2">
+                        <div class="flex justify-between">
+                            <span>Balloons Processed:</span>
+                            <span class="text-white">${strategy.totalProcessed}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        ${['red', 'blue', 'green', 'yellow'].map(color => `
+                            <div class="bg-indigo-800/30 p-2 rounded border border-indigo-600">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-${color}-400 font-bold">${color.toUpperCase()}:</span>
+                                    <span class="text-white">${strategy.strategy[color] || 0} pumps</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-indigo-300">Avg Score:</span>
+                                        <span class="text-green-400">${strategy.performance[color].avgScore.toFixed(1)}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-indigo-300">Pop Rate:</span>
+                                        <span class="text-red-400">${strategy.performance[color].popRate.toFixed(1)}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // Add event listeners for delete buttons
+        strategiesList.querySelectorAll('.delete-strategy-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                deleteL2Strategy(index);
+            });
+        });
+    }
+    
+    function deleteL2Strategy(index) {
+        if (index >= 0 && index < gameState.l2.pastStrategies.length) {
+            gameState.l2.pastStrategies.splice(index, 1);
+            saveGameState();
+            displayPastStrategies();
+        }
+    }
+    
+    function clearAllL2Strategies() {
+        gameState.l2.pastStrategies = [];
+        saveGameState();
+        displayPastStrategies();
+    }
+    
+    function skipL2ToEnd() {
+        if (!gameState.l2.isRunning) return;
+        
+        // Stop the current simulation
+        clearInterval(gameState.l2.interval);
+        
+        // Simulate processing remaining balloons instantly
+        const remaining = 100 - gameState.l2.processedCount;
+        for (let i = 0; i < remaining; i++) {
+            const color = getL2RandomBalloon();
+            const strategy = gameState.l2.strategy[color];
+            const pumps = Math.min(strategy, BALLOON_CONFIG[color].range[1]);
+            
+            // Simulate balloon processing
+            const balloon = { color, pumps, popped: pumps >= BALLOON_CONFIG[color].range[1] };
+            const score = balloon.popped ? 0 : pumps;
+            
+            // Update stats
+            gameState.l2.stats[color].count++;
+            gameState.l2.stats[color].pumps += pumps;
+            gameState.l2.stats[color].score += score;
+            if (balloon.popped) gameState.l2.stats[color].pops++;
+            
+            gameState.l2.processedCount++;
+        }
+        
+        // Update display
+        updateL2Stats();
+        
+        // Small delay to ensure performance monitor updates are visible
+        setTimeout(() => {
+            endLevel2(true);
+        }, 100);
+    }
 
     function toggleL2Simulation() {
         gameState.l2.isRunning = !gameState.l2.isRunning;
+        const skipBtn = document.getElementById('l2-skip-to-end-btn');
+        
         if (gameState.l2.isRunning) {
             if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
             l2StartStopBtn.textContent = 'PAUSE & ADJUST';
             l2StartStopBtn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
             l2StartStopBtn.classList.add('bg-amber-500', 'hover:bg-amber-600');
             updateL2Strategy();
+            disableL2Sliders();
+            resetL2Simulation(); // Reset when starting
             runL2Simulation();
+            skipBtn.classList.remove('hidden'); // Show skip button
         } else {
             if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
             l2StartStopBtn.textContent = 'RESUME SIMULATION';
             l2StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
             l2StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            enableL2Sliders();
+            saveL2Strategy(); // Save strategy when pausing
             clearInterval(gameState.l2.interval);
+            skipBtn.classList.add('hidden'); // Hide skip button when paused
         }
     }
 
@@ -1217,6 +1456,8 @@
     document.getElementById('next-slide-btn').addEventListener('click', () => renderEducationalSlides('l1', currentSlideIndex + 1));
 
     l2StartStopBtn.addEventListener('click', toggleL2Simulation);
+    document.getElementById('l2-clear-all-strategies').addEventListener('click', clearAllL2Strategies);
+    document.getElementById('l2-skip-to-end-btn').addEventListener('click', skipL2ToEnd);
     setupL2Controls();
     l3StartStopBtn.addEventListener('click', toggleL3Simulation);
     setupL3Controls();
