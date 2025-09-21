@@ -160,6 +160,31 @@
             border-radius: 9999px;
             transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
+        #custom-tooltip {
+            position: fixed;
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 1000;
+            pointer-events: none;
+            transform: translate(-50%, -100%);
+            margin-top: -8px;
+        }
+        #custom-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2937;
+        }
     </style>
 </head>
 <body class="bg-indigo-900 text-white">
@@ -338,6 +363,9 @@
         </div>
     </div>
 
+    <!-- Custom Tooltip -->
+    <div id="custom-tooltip"></div>
+
     <!-- Tutorial Overlay -->
     <div id="tutorial-overlay" class="fixed inset-0 z-[998] hidden">
         <div id="tutorial-highlight" class="tutorial-highlight"></div>
@@ -365,6 +393,7 @@
     const tutorialBox = document.getElementById('tutorial-box');
     const tutorialPrevBtn = document.getElementById('tutorial-prev-btn');
     const tutorialNextBtn = document.getElementById('tutorial-next-btn');
+    const customTooltip = document.getElementById('custom-tooltip');
 
 
     // --- Game Config ---
@@ -451,6 +480,27 @@
 
     // --- Utility Functions ---
     const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    
+    // --- Custom Tooltip Functions ---
+    function showTooltip(text, x, y) {
+        customTooltip.textContent = text;
+        customTooltip.style.left = x + 'px';
+        customTooltip.style.top = y + 'px';
+        customTooltip.style.opacity = '1';
+        customTooltip.style.visibility = 'visible';
+    }
+    
+    function hideTooltip() {
+        customTooltip.style.opacity = '0';
+        customTooltip.style.visibility = 'hidden';
+    }
+    
+    function updateTooltipPosition(e) {
+        if (customTooltip.style.visibility === 'visible') {
+            customTooltip.style.left = e.clientX + 'px';
+            customTooltip.style.top = e.clientY + 'px';
+        }
+    }
     
     const showScreen = (screenId) => {
         screens.forEach(s => s.classList.remove('active-screen'));
@@ -1031,6 +1081,23 @@
     setupL2Controls();
     l3StartStopBtn.addEventListener('click', toggleL3Simulation);
     setupL3Controls();
+    
+    // --- Custom Tooltip Event Listeners ---
+    selectL2Btn.addEventListener('mouseenter', (e) => {
+        if (selectL2Btn.disabled) {
+            showTooltip('Level 1 must be completed first', e.clientX, e.clientY);
+        }
+    });
+    selectL2Btn.addEventListener('mouseleave', hideTooltip);
+    selectL2Btn.addEventListener('mousemove', updateTooltipPosition);
+    
+    selectL3Btn.addEventListener('mouseenter', (e) => {
+        if (selectL3Btn.disabled) {
+            showTooltip('Level 2 must be completed first', e.clientX, e.clientY);
+        }
+    });
+    selectL3Btn.addEventListener('mouseleave', hideTooltip);
+    selectL3Btn.addEventListener('mousemove', updateTooltipPosition);
     tutorialBox.addEventListener('click', (e) => e.stopPropagation());
     tutorialNextBtn.addEventListener('click', () => {
         const activeScreenId = document.querySelector('.active-screen').id;
