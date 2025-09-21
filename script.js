@@ -1114,6 +1114,10 @@ function endLevel2(isReview = false) {
         clearInterval(gameState.l2.interval);
         gameState.l2.isRunning = false;
         gameState.unlockedLevels = Math.max(gameState.unlockedLevels, 3);
+        
+        // Save the strategy when simulation completes automatically
+        saveL2Strategy();
+        
         saveGameState();
     }
     updateL2Stats();
