@@ -1,0 +1,112 @@
+/* ===========================================
+   AI LITERACY GAME - MAIN STYLES
+   ===========================================
+   Core layout, typography, and global styles
+*/
+
+/* Global App Styling - Professional AI Interface */
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #12285a !important; /* Dark Navy Blue - Professional AI theme */
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    overflow-y: auto;
+    padding-top: 60px; /* Space for global banner */
+    padding-bottom: 20px; /* Ensure space for descenders */
+}
+
+.active-screen {
+    display: flex;
+}
+
+/* Button styles */
+.btn { 
+    transition: transform 0.1s ease, background-color 0.2s; 
+}
+
+.btn:active { 
+    transform: scale(0.95); 
+}
+
+/* Performance bars */
+.performance-bar {
+    background-color: #374151; /* gray-700 */
+    border-radius: 9999px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.performance-bar-inner {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+/* Tutorial overlay */
+#tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 999;
+}
+
+.tutorial-highlight {
+    position: absolute;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.7);
+    z-index: 1000;
+    transition: all 0.5s ease-in-out;
+}
+
+#tutorial-box {
+    position: absolute;
+    background: #312e81;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    border: 2px solid #4f46e5;
+    max-width: 350px;
+    z-index: 1001;
+    transition: all 0.5s ease-in-out;
+}
+
+.slide-toggle-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+/* Custom tooltip */
+#custom-tooltip {
+    position: fixed;
+    background: #1f2937;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1000;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    margin-top: -8px;
+}
+
+#custom-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1f2937;
+}

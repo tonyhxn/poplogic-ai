@@ -6,49 +6,6 @@ A modular, educational game that teaches AI concepts through interactive balloon
 
 PopLogic is an educational game designed to teach AI literacy concepts to students in Years 7-10. Players learn about pattern recognition, data bias, human-in-the-loop processes, and AI temperature through engaging balloon factory simulations.
 
-## 🏗️ Modular Architecture
-
-The project has been refactored to follow modern JavaScript best practices with a clean, modular structure:
-
-### 📁 File Structure
-
-```
-poplogic-ai/
-├── index.html                 # Original monolithic version
-├── index-modular.html         # New modular version
-├── styles.css                 # Centralized CSS styles
-├── js/
-│   ├── app.js                 # Main application controller
-│   ├── gameState.js           # Game state management
-│   ├── screenManager.js       # Screen navigation
-│   ├── tutorialManager.js     # Tutorial system
-│   ├── weatherSystem.js       # Weather effects and temperature
-│   ├── balloonRenderer.js     # Balloon creation and animation
-│   ├── level1Controller.js    # Level 1 gameplay logic
-│   ├── level2Controller.js    # Level 2 gameplay logic
-│   ├── level3Controller.js    # Level 3 gameplay logic
-│   └── constants.js           # Game constants and configuration
-└── README.md                  # This file
-```
-
-### 🔧 Module Responsibilities
-
-#### **Core Modules**
-- **`app.js`** - Main application controller, coordinates all modules
-- **`gameState.js`** - Centralized state management and persistence
-- **`screenManager.js`** - Handles navigation between different screens
-- **`constants.js`** - Game configuration, balloon settings, tutorial steps
-
-#### **Feature Modules**
-- **`tutorialManager.js`** - Educational content and step progression
-- **`weatherSystem.js`** - Weather effects, temperature changes, visual animations
-- **`balloonRenderer.js`** - Balloon creation, animation, and visual effects
-
-#### **Level Controllers**
-- **`level1Controller.js`** - Pattern recognition gameplay
-- **`level2Controller.js`** - AI bot training simulation
-- **`level3Controller.js`** - Temperature control and adaptive strategies
-
 ## 🎮 Game Levels
 
 ### Level 1: Pattern Recognition
