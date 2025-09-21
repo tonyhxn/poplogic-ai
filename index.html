@@ -28,16 +28,30 @@
             display: flex;
         }
         .balloon {
-            width: 100px;
-            height: 120px;
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            width: 80px;
+            height: 90px;
+            border-radius: 50%;
             transition: transform 0.2s ease-out;
             cursor: pointer;
             position: relative;
-            background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0) 50%);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.8), rgba(255,255,255,0.3) 40%, rgba(255,255,255,0) 70%),
+                radial-gradient(circle at 70% 30%, rgba(255,255,255,0.4), rgba(255,255,255,0) 50%);
+            box-shadow: 
+                inset 0 2px 4px rgba(255,255,255,0.3),
+                inset 0 -2px 4px rgba(0,0,0,0.1),
+                0 4px 8px rgba(0,0,0,0.2);
         }
         .balloon:hover {
-            animation: hover-wobble 0.8s ease-in-out infinite;
+            /* Removed hover effect for Level 2 simulation */
+        }
+        .balloon.pre-explode {
+            animation: pre-explode 0.5s ease-out forwards;
+        }
+        @keyframes pre-explode {
+            0% { transform: scale(0.5); }
+            50% { transform: scale(0.8); }
+            100% { transform: scale(1.2); }
         }
         .balloon::after {
             content: '';
@@ -47,40 +61,116 @@
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 12px solid currentColor;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 10px solid currentColor;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+        .balloon-string {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 50px;
+            background: linear-gradient(to bottom, #FFFFFF, #F0F0F0);
+            border-radius: 2px;
+            animation: string-float 6s ease-in-out infinite;
+            transform-origin: top center;
+            box-shadow: 0 0 2px rgba(0,0,0,0.1);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 30%),
+                radial-gradient(circle at 80% 40%, rgba(255,255,255,0.6), transparent 40%),
+                radial-gradient(circle at 40% 60%, rgba(255,255,255,0.7), transparent 35%),
+                radial-gradient(circle at 70% 80%, rgba(255,255,255,0.5), transparent 45%);
+            border-radius: 50px;
+            transform: translateX(-50%) scaleY(1.2) scaleX(0.3);
+        }
+        @keyframes string-float {
+            0% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-4deg) translateY(0px) skewX(1deg);
+            }
+            8% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(3deg) translateY(-2px) skewX(-0.5deg);
+            }
+            16% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-2deg) translateY(1px) skewX(1.5deg);
+            }
+            24% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(4deg) translateY(-1px) skewX(-1deg);
+            }
+            32% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-3deg) translateY(2px) skewX(0.5deg);
+            }
+            40% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(2deg) translateY(-1px) skewX(-1.5deg);
+            }
+            48% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-4deg) translateY(1px) skewX(1deg);
+            }
+            56% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(3deg) translateY(-2px) skewX(-0.5deg);
+            }
+            64% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-2deg) translateY(2px) skewX(1.5deg);
+            }
+            72% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(4deg) translateY(-0.5px) skewX(-1deg);
+            }
+            80% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-3deg) translateY(1px) skewX(0.5deg);
+            }
+            88% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(2deg) translateY(-1px) skewX(-1.5deg);
+            }
+            96% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-3deg) translateY(0.5px) skewX(1deg);
+            }
+            100% { 
+                transform: translateX(-50%) scaleY(1.2) scaleX(0.3) rotate(-4deg) translateY(0px) skewX(1deg);
+            }
         }
         .balloon-face {
             position: absolute;
-            top: 40%;
+            top: 35%;
             left: 50%;
             transform: translateX(-50%);
-            width: 50%;
-            height: 30%;
+            width: 60%;
+            height: 40%;
         }
         .eye {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: white;
             border-radius: 50%;
             top: 0;
             transition: transform 0.2s ease;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
-        .eye.left { left: 5px; }
-        .eye.right { right: 5px; }
+        .eye.left { left: 4px; }
+        .eye.right { right: 4px; }
+        .eye::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: black;
+            border-radius: 50%;
+            top: 2.5px;
+            left: 2.5px;
+        }
         .mouth {
             position: absolute;
-            bottom: 0;
+            bottom: 6px;
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
-            height: 15px;
-            border: 3px solid white;
+            width: 24px;
+            height: 6px;
+            background: transparent;
+            border: 4px solid rgba(0,0,0,0.4);
             border-top: none;
-            border-radius: 0 0 15px 15px;
-            transition: height 0.2s ease, border-radius 0.2s ease;
+            border-radius: 0 0 30px 30px;
         }
         .pump-jiggle {
             animation: pump-jiggle 0.3s ease-in-out;
@@ -167,6 +257,17 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            color: transparent; /* Fallback for browsers that don't support background-clip */
+            opacity: 1 !important; /* Ensure title is always visible */
+        }
+        
+        /* Fallback for browsers that don't support background-clip: text */
+        @supports not (background-clip: text) {
+            .animated-title {
+                background: none;
+                color: #ffffff;
+                text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            }
         }
         @keyframes balloonFloat {
             0%, 100% { 
@@ -193,6 +294,106 @@
                 transform: scale(1) rotate(0deg);
                 opacity: 1;
             }
+        }
+        
+        /* Weather Effects */
+        .rain-drop {
+            position: absolute;
+            width: 3px;
+            height: 25px;
+            background: linear-gradient(to bottom, transparent, #3b82f6, #1d4ed8);
+            animation: rainFall 0.8s linear infinite;
+            box-shadow: 0 0 6px #3b82f6;
+        }
+        
+        .snow-flake {
+            position: absolute;
+            color: #ffffff;
+            font-size: 16px;
+            animation: snowFall 4s linear infinite;
+            text-shadow: 0 0 10px #e0e7ff;
+        }
+        
+        .heat-wave {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #fbbf24, transparent);
+            animation: heatRipple 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px #fbbf24;
+        }
+        
+        .storm-cloud {
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            background: linear-gradient(135deg, #374151, #1f2937, #111827);
+            border-radius: 50px 20px 50px 20px;
+            animation: stormCloud 3s ease-in-out infinite;
+            opacity: 0.8;
+        }
+        
+        .lightning {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, #fbbf24, #ffffff, #fbbf24);
+            animation: lightning 0.1s linear infinite;
+            box-shadow: 0 0 20px #fbbf24;
+        }
+        
+        .ice-crystal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #e0f2fe, #b3e5fc, #81d4fa);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: iceFall 3s linear infinite;
+            box-shadow: 0 0 15px #81d4fa;
+        }
+        
+        .heat-distortion {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 0%, rgba(251, 191, 36, 0.1) 50%, transparent 100%);
+            animation: heatDistortion 2s ease-in-out infinite;
+        }
+        
+        @keyframes rainFall {
+            0% { transform: translateY(-100vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(30px); opacity: 0; }
+        }
+        
+        @keyframes snowFall {
+            0% { transform: translateY(-100vh) translateX(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(80px) rotate(720deg); opacity: 0; }
+        }
+        
+        @keyframes heatRipple {
+            0%, 100% { transform: translateY(0) scaleX(0); opacity: 0; }
+            50% { transform: translateY(-30px) scaleX(1); opacity: 0.8; }
+        }
+        
+        @keyframes stormCloud {
+            0%, 100% { transform: translateX(-200px) translateY(0); opacity: 0.8; }
+            50% { transform: translateX(calc(100vw + 200px)) translateY(-20px); opacity: 0.6; }
+        }
+        
+        @keyframes lightning {
+            0%, 90% { opacity: 0; }
+            95% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes iceFall {
+            0% { transform: translateY(-100vh) translateX(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(60px) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes heatDistortion {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.1; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.3; }
         }
         .subtitle-slide {
             animation: subtitleSlide 0.6s ease-out 0.3s both;
@@ -269,7 +470,7 @@
             <div><span class="font-bold text-red-400">RED:</span> $<span id="global-red">10000</span></div>
             <div><span class="font-bold text-blue-400">BLUE:</span> $<span id="global-blue">5000</span></div>
             <div><span class="font-bold text-green-400">GREEN:</span> $<span id="global-green">3453</span></div>
-            <div><span class="font-bold text-yellow-400">GOLD:</span> $<span id="global-gold">1500</span></div>
+            <div><span class="font-bold text-yellow-400">YELLOW:</span> $<span id="global-gold">1500</span></div>
         </div>
     </div>
 
@@ -286,10 +487,28 @@
 
     <!-- Main Menu Screen -->
     <div id="main-menu" class="screen active-screen flex-col justify-center items-center p-4 text-center" style="padding-top: 80px; padding-bottom: 40px;">
-        <h1 id="main-title" class="text-4xl md:text-8xl font-black mb-4 animated-title">Pop Logic</h1>
-        <h2 id="main-subtitle" class="text-2xl md:text-3xl font-bold text-indigo-200 mb-6" style="margin-top: 1rem;">An AI Training Game</h2>
-        <p id="main-description" class="max-w-2xl text-indigo-300 mb-8">A game about patterns, predictions, and probability. Can you master the logic before the pop? Learn core AI concepts in a fun, risk-vs-reward challenge.</p>
-        <button id="start-game-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-10 rounded-2xl text-xl shadow-lg transform hover:scale-105">Start</button>
+        <h1 id="main-title" class="text-4xl md:text-7xl font-black mb-6 animated-title" style="line-height: 1.1;">POP LOGIC</h1>
+        <h2 id="main-subtitle" class="text-2xl md:text-3xl font-bold text-indigo-200 mb-6" style="margin-top: 1rem;">Welcome to the Balloon Factory</h2>
+        
+        <div class="max-w-4xl mb-8">
+            <p class="text-lg text-indigo-300 mt-4 mb-6 leading-relaxed">
+                You're the new AI engineer at PopLogic Balloon Factory! Your mission is to maximize yield 
+                by training AI systems to pump balloons perfectly. Each balloon has a secret maximum capacity - 
+                pump too little and you miss profit, pump too much and it pops!
+            </p>
+            
+            <div class="bg-indigo-800/30 border border-indigo-600 rounded-2xl p-6 mb-6">
+                <p class="text-2xl font-bold text-green-400 mb-2">"Pump and Earn, Pop it Lose it"</p>
+                <p class="text-indigo-300 text-sm">The factory's golden rule</p>
+            </div>
+            
+            <p class="text-lg text-indigo-300 leading-relaxed">
+                Master AI concepts through interactive balloon experiments. Learn pattern recognition, 
+                model training, and temperature control in this engaging educational game.
+            </p>
+        </div>
+        
+        <button id="start-game-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-10 rounded-2xl text-xl shadow-lg transform hover:scale-105">Enter the Factory</button>
     </div>
 
     <!-- Level Select Screen -->
@@ -301,12 +520,12 @@
                     <h2 class="text-2xl font-bold">Level 1: Human Training</h2>
                     <p class="text-indigo-300 mt-2">Learn the basics of pattern recognition and data bias by training yourself first.</p>
                 </button>
-                <button id="select-l2-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                     <h2 class="text-2xl font-bold flex items-center gap-2">Level 2: AI Supervisor <span id="l2-lock" class="text-2xl">🔒</span></h2>
+                <button id="select-l2-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition">
+                     <h2 class="text-2xl font-bold">Level 2: AI Supervisor</h2>
                     <p class="text-indigo-300 mt-2">Build a simple AI and act as its Human-in-the-Loop supervisor to guide its performance.</p>
                 </button>
-                <button id="select-l3-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                     <h2 class="text-2xl font-bold flex items-center gap-2">Open Game Mode <span id="l3-lock" class="text-2xl">🔒</span></h2>
+                <button id="select-l3-btn" class="btn bg-indigo-800/80 p-6 rounded-3xl text-left hover:bg-indigo-700 border border-indigo-600 transition">
+                     <h2 class="text-2xl font-bold">Open Game Mode</h2>
                     <p class="text-indigo-300 mt-2">Test your adaptive strategy in an infinite mode with a dynamic, unpredictable environment.</p>
                 </button>
             </div>
@@ -370,6 +589,25 @@
     <div id="level-2" class="screen flex-col justify-center items-center p-4" style="padding-top: 120px;">
         <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
             <div id="l2-control-panel" class="lg:w-1/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
+                <!-- Balloon Animation Simulation (moved here, smaller) -->
+                <div id="l2-simulation-panel" class="bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700 flex flex-col items-center mb-6">
+                    <h3 class="text-lg font-bold mb-2">BALLOON FACTORY</h3>
+                    <p class="text-xs text-gray-300 mb-3">Pump and Earn. Pop it and Lose it</p>
+                    <div class="flex justify-end mb-2">
+                        <button id="l2-skip-to-end-btn" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 px-2 py-1 rounded transition hidden">
+                            Skip to End
+                        </button>
+                    </div>
+                    <div class="text-center mb-3">
+                        <div class="text-2xl font-bold text-green-400 mb-1">$<span id="l2-earned-amount">0</span> EARNED</div>
+                        <p class="text-xs text-indigo-300">Processed: <span id="l2-processed-count">0</span> / 100</p>
+                    </div>
+                    <div class="w-full h-40 bg-indigo-800/50 rounded-xl overflow-hidden relative border border-indigo-600">
+                        <div id="l2-conveyor" class="absolute h-full w-full"></div>
+                    </div>
+                </div>
+                
+                <!-- AI Strategy Rules (moved under simulation) -->
                 <h3 class="text-xl font-bold mb-4 text-center">AI Strategy Rules</h3>
                 <div class="space-y-4">
                     <div class="flex items-center gap-4"><label class="font-bold text-red-400 w-16">Red:</label><input type="range" id="l2-red-pumps" min="0" max="15" value="0" class="flex-1"><span id="l2-red-val" class="font-mono w-8 text-center">0</span></div>
@@ -378,43 +616,37 @@
                     <div class="flex items-center gap-4"><label class="font-bold text-yellow-400 w-16">Yellow:</label><input type="range" id="l2-yellow-pumps" min="0" max="15" value="0" class="flex-1"><span id="l2-yellow-val" class="font-mono w-8 text-center">0</span></div>
                 </div>
                 <div class="mt-6">
-                    <button id="l2-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">START SIMULATION</button>
+                    <button id="l2-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">RUN TEST</button>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex gap-3 mt-3">
+                        <button id="l2-back-to-learn-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-md flex-1">
+                            Back to Learn
+                        </button>
+                        <button id="l2-open-game-btn" class="btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-md flex-1">
+                            Open Game Mode
+                        </button>
+                    </div>
                 </div>
                 
-                <!-- Past Strategies Section -->
-                <div id="l2-past-strategies" class="mt-6">
+            </div>
+            
+            <div class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
+                <!-- Past Strategies Section (moved here, above performance monitor) -->
+                <div id="l2-past-strategies" class="mb-6">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="text-lg font-bold text-indigo-200">Past Strategies</h3>
                         <button id="l2-clear-all-strategies" class="text-xs bg-red-500/20 hover:bg-red-500/30 text-red-400 px-2 py-1 rounded transition">
                             Clear All
                         </button>
                     </div>
-                    <div id="l2-strategies-list" class="space-y-3 max-h-48 overflow-y-auto">
+                    <div id="l2-strategies-list" class="flex gap-4 overflow-x-auto pb-2" style="scrollbar-width: thin;">
                         <!-- Past strategies will be populated here -->
                     </div>
                 </div>
                 
-                <div id="l2-summary-area" class="w-full text-center hidden mt-auto pt-6">
-                    <h3 class="text-2xl font-bold text-green-400">Simulation Complete!</h3>
-                    <p class="text-indigo-200 my-4 max-w-xl mx-auto">By pausing and adjusting your AI, you acted as a Human-in-the-Loop. This is vital for safety and performance.</p>
-                    <div class="flex gap-4 justify-center">
-                         <button id="l2-summary-next-btn" class="btn bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Open Game Mode</button>
-                         <button id="l2-summary-replay-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-2xl text-lg">Replay</button>
-                    </div>
-                </div>
-            </div>
-            <div id="l2-simulation-panel" class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center">
-                <h3 class="text-xl font-bold mb-2">Live Simulation Feed</h3>
-                <div class="flex justify-end mb-4">
-                    <button id="l2-skip-to-end-btn" class="text-sm bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 px-3 py-1 rounded transition hidden">
-                        Skip to End
-                    </button>
-                </div>
-                <p class="text-sm text-indigo-300 mb-4">Processed: <span id="l2-processed-count">0</span> / 100</p>
-                <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700">
-                    <div id="l2-conveyor" class="absolute h-full w-full"></div>
-                </div>
-                <div class="mt-6 w-full bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700">
+                <!-- AI Performance Monitor -->
+                <div class="w-full bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700">
                     <h3 class="text-xl font-bold text-center mb-4">AI Performance Monitor</h3>
                     <div id="l2-performance-monitor" class="space-y-4"></div>
                 </div>
@@ -424,28 +656,77 @@
     
     <!-- Level 3 Screen -->
     <div id="level-3" class="screen flex-col justify-center items-center p-4">
-        <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+        <!-- Weather Effects Container -->
+        <div id="weather-effects" class="fixed inset-0 pointer-events-none z-0">
+            <div id="rain-drops" class="absolute inset-0 hidden"></div>
+            <div id="snow-flakes" class="absolute inset-0 hidden"></div>
+            <div id="heat-waves" class="absolute inset-0 hidden"></div>
+        </div>
+        
+        <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 relative z-10">
+            <!-- Control Panel -->
             <div class="lg:w-1/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
-                <div class="text-center mb-4"><h3 class="text-xl font-bold">Room Temperature</h3><p id="l3-temp-display" class="text-5xl font-black transition-colors duration-500">20°C</p></div>
-                <h3 class="text-xl font-bold mb-4 text-center">AI Strategy Rules</h3>
+                <!-- Weather Station -->
+                <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-4 rounded-2xl border border-blue-600/50 mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-blue-200">🌡️ Factory Climate Control</h3>
+                        <div id="weather-icon" class="text-2xl">🌡️</div>
+                    </div>
+                    <div class="text-center">
+                        <p id="l3-temp-display" class="text-4xl font-black transition-all duration-1000 mb-2">20°C</p>
+                        <p id="weather-status" class="text-sm text-blue-300">Optimal Conditions</p>
+                        <div class="mt-2 h-2 bg-blue-900/50 rounded-full overflow-hidden">
+                            <div id="temp-bar" class="h-full bg-gradient-to-r from-blue-400 to-red-400 transition-all duration-1000" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Strategy Rules -->
+                <h3 class="text-xl font-bold mb-4 text-center">🎛️ AI Pump Settings</h3>
                 <div class="space-y-4">
                     <div class="flex items-center gap-4"><label class="font-bold text-red-400 w-16">Red:</label><input type="range" id="l3-red-pumps" min="1" max="25" value="8" class="w-full"><span id="l3-red-val" class="font-mono w-8 text-center">8</span></div>
                     <div class="flex items-center gap-4"><label class="font-bold text-blue-400 w-16">Blue:</label><input type="range" id="l3-blue-pumps" min="1" max="25" value="5" class="w-full"><span id="l3-blue-val" class="font-mono w-8 text-center">5</span></div>
                     <div class="flex items-center gap-4"><label class="font-bold text-green-400 w-16">Green:</label><input type="range" id="l3-green-pumps" min="1" max="25" value="6" class="w-full"><span id="l3-green-val" class="font-mono w-8 text-center">6</span></div>
                     <div class="flex items-center gap-4"><label class="font-bold text-yellow-400 w-16">Yellow:</label><input type="range" id="l3-yellow-pumps" min="1" max="30" value="10" class="w-full"><span id="l3-yellow-val" class="font-mono w-8 text-center">10</span></div>
                 </div>
-                <div class="mt-6"><button id="l3-start-stop-btn" class="btn bg-indigo-500 hover:bg-indigo-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">START SIMULATION</button></div>
-                 <div class="mt-auto pt-6">
-                    <h3 class="text-xl font-bold mb-2 text-center">AI Insights</h3>
+                
+                <div class="mt-6">
+                    <button id="l3-start-stop-btn" class="btn bg-green-500 hover:bg-green-600 w-full text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md">🚀 START PRODUCTION</button>
+                </div>
+                
+                <div class="pt-8">
+                    <h3 class="text-xl font-bold mb-2 text-center">🤖 AI Insights</h3>
                     <p id="l3-insights" class="text-center text-indigo-300 h-16 transition-opacity duration-500"></p>
                 </div>
             </div>
-            <div class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col items-center">
-                <h3 class="text-xl font-bold mb-2">Open Game Mode</h3>
-                <p class="text-sm text-indigo-300 mb-4">Total Score: $<span id="l3-total-score">0</span></p>
-                <div class="w-full h-24 bg-indigo-900/50 rounded-2xl overflow-hidden relative border border-indigo-700"><div id="l3-conveyor" class="absolute h-full w-full"></div></div>
-                <div class="mt-6 w-full bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700">
-                    <h3 class="text-xl font-bold text-center mb-4">AI Performance Monitor</h3>
+            
+            <!-- Production Floor -->
+            <div class="flex-grow lg:w-2/3 bg-indigo-800/50 p-6 rounded-3xl border border-indigo-700 flex flex-col">
+                <!-- Production Header -->
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold mb-2">🏭 PRODUCTION FLOOR</h3>
+                    <p class="text-sm text-indigo-300 mb-4">Continuous Balloon Manufacturing - Weather Adaptive Mode</p>
+                    <div class="flex justify-center items-center gap-8">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-400">$ <span id="l3-total-score">0</span></div>
+                            <div class="text-xs text-indigo-300">Total Revenue</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-400"><span id="l3-balloons-processed">0</span></div>
+                            <div class="text-xs text-indigo-300">Balloons Processed</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conveyor Belt -->
+                <div class="w-full h-32 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-2xl overflow-hidden relative border-2 border-indigo-600 mb-6">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent animate-pulse"></div>
+                    <div id="l3-conveyor" class="absolute h-full w-full"></div>
+                </div>
+                
+                <!-- Performance Monitor -->
+                <div class="w-full bg-indigo-900/50 p-4 rounded-2xl border border-indigo-700">
+                    <h3 class="text-xl font-bold text-center mb-4">📊 Production Analytics</h3>
                     <div id="l3-performance-monitor" class="space-y-4"></div>
                 </div>
             </div>
@@ -472,7 +753,21 @@
         </button>
     </div>
 
-<script>
+    <!-- Level 2 Completion Modal -->
+    <div id="l2-completion-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-indigo-900/95 backdrop-blur-sm border border-indigo-600 rounded-3xl p-8 max-w-md mx-4 text-center shadow-2xl">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold text-green-400 mb-4">Simulation Complete!</h2>
+            <p class="text-indigo-200 mb-6 leading-relaxed">
+                By pausing and adjusting your AI, you acted as a Human-in-the-Loop. This is vital for safety and performance.
+            </p>
+            <button id="l2-modal-close" class="btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-2xl text-lg shadow-md">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <script>
     // --- DOM Elements ---
     const screens = document.querySelectorAll('.screen');
     const homeBtn = document.getElementById('home-btn');
@@ -495,7 +790,7 @@
 
     // --- Game Config ---
     const BALLOON_CONFIG = {
-        red: { color: 'red-400', range: [6, 12], chartColor: '#F87171' },
+        red: { color: 'red-500', range: [6, 12], chartColor: '#EF4444' },
         blue: { color: 'blue-400', range: [4, 6], chartColor: '#60A5FA' },
         green: { color: 'green-400', range: [2, 8], chartColor: '#4ADE80' },
         yellow: { color: 'yellow-400', range: [1, 20], chartColor: '#FBBF24' },
@@ -605,19 +900,25 @@
         // Reset all elements to initial state
         mainTitle.style.opacity = '0';
         mainTitle.style.transform = 'scale(0) rotate(-10deg)';
-        mainSubtitle.style.opacity = '0';
-        mainSubtitle.style.transform = 'translateY(50px)';
+        // Don't hide the subtitle - keep it visible
+        // mainSubtitle.style.opacity = '0';
+        // mainSubtitle.style.transform = 'translateY(50px)';
         mainDescription.style.opacity = '0';
         mainDescription.style.transform = 'translateY(30px)';
         
         // Trigger animations with delays
         setTimeout(() => {
             mainTitle.classList.add('title-bounce');
+            // Ensure title is visible after animation
+            setTimeout(() => {
+                mainTitle.style.opacity = '1';
+            }, 500);
         }, 100);
         
-        setTimeout(() => {
-            mainSubtitle.classList.add('subtitle-slide');
-        }, 400);
+        // Skip subtitle animation to keep it visible
+        // setTimeout(() => {
+        //     mainSubtitle.classList.add('subtitle-slide');
+        // }, 400);
         
         setTimeout(() => {
             mainDescription.classList.add('description-fade');
@@ -769,7 +1070,7 @@
         const levelKey = 'l' + activeScreenId.slice(-1);
         
         // Mark tutorial as completed for this level
-        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : L2_TUTORIAL_STEPS;
+        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : levelKey === 'l2' ? L2_TUTORIAL_STEPS : L3_TUTORIAL_STEPS;
         gameState.tutorial[levelKey] = steps.length;
         saveGameState();
         
@@ -781,7 +1082,7 @@
         { element: '#l1-game-area', title: 'Welcome to Training!', text: "Your goal is simple: PUMP the balloon to increase its value, but CASH OUT the score before it pops!"},
         { element: '#global-banner', title: 'Global Player Data', text: "Here's what players around the world are earning. This data might offer a clue... or it might show you a biased strategy. An AI must learn to evaluate if external data is useful or misleading. Should you trust it?"},
         { element: '#l1-data-panel', title: 'Your Personal Data', text: "As you play, your results will appear here. This is your AI's 'memory'. Use it to learn the balloon behaviors."},
-        { element: '#l1-data-panel .text-red-400', title: 'Check your Average', text: () => `After a few successful runs, the <strong>Avg. Pumps</strong> stat appears. For example, your current average for Red balloons is <strong>${((gameState.l1.stats.red.pumps / gameState.l1.stats.red.count) || 0).toFixed(1)}</strong>. Is this a reliable strategy?`},
+        { element: '#l1-data-panel .text-red-400', title: '🎯 Pattern Recognition & Strategy Building', text: "After a few successful runs, the <strong>Avg. Pumps</strong> stat appears for each color. This is your personal data!<br><br><strong>Think about it:</strong> Do you notice patterns? Are some colors consistently allowing more pumps before popping? <br><br>This is how AI learns! By analyzing patterns in data, you can develop strategies. <br><br><em>💡 Pro tip: If Red balloons average 8 pumps safely, maybe try 7 pumps next time to be safer, or 9 pumps to be more aggressive!</em>"},
         { element: 'body', title: "AI's Short-Term Memory", text: "This panel shows your last 8 results. Think of this as an AI's <strong>Context Window</strong>. Like this panel, a GenAI model can only 'remember' a limited amount of recent information to make its next decision. Information that scrolls off is forgotten!<br><br><div class='mt-4 p-3 bg-indigo-800/50 rounded-lg'><div class='grid grid-cols-8 gap-2 justify-items-center text-center text-sm'><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-red-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-red-400);'><span class='text-white'>7</span><span class='text-lg'>💰</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-red-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-blue-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-blue-400);'><span class='text-white'>4</span><span class='text-lg'>💰</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-blue-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-green-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-green-400);'><span class='text-white'>3</span><span class='text-lg'>💥</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-green-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-red-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-red-400);'><span class='text-white'>9</span><span class='text-lg'>💰</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-red-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-blue-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-blue-400);'><span class='text-white'>5</span><span class='text-lg'>💰</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-blue-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-green-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-green-400);'><span class='text-white'>6</span><span class='text-lg'>💥</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-green-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-red-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-red-400);'><span class='text-white'>8</span><span class='text-lg'>💰</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-red-400);'></div></div><div class='w-12 h-14 rounded-[50%/60%_60%_40%_40%] bg-blue-400 flex flex-col items-center justify-center text-white font-bold text-xs relative shadow-md' style='color: var(--tw-bg-blue-400);'><span class='text-white'>3</span><span class='text-lg'>💰</span><div class='absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent' style='border-top-color: var(--tw-bg-blue-400);'></div></div></div><p class='text-xs text-indigo-300 mt-2'>Example: Last 8 balloon results (💰 = cashed out, 💥 = popped)</p></div>"},
         { element: '#l1-data-panel .text-green-400', title: 'Noisy Data!', text: "Watch out! Green balloons are highly unpredictable. In AI, this is called 'noisy data', and it's very difficult to make accurate predictions from it."},
         { element: 'body', title: 'You are ready to begin!', text: "You've learned the basics! Time to test your knowledge. Good luck!"},
@@ -792,18 +1093,20 @@
         { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the performance monitor to see how it performs."},
         { element: '#l2-start-stop-btn', title: 'Human-in-the-Loop', text: "Things not going well? You can PAUSE the simulation at any time to adjust your AI's rules. This is your role as a Human Supervisor!"},
     ];
+    
+    const L3_TUTORIAL_STEPS = [
+        { element: '#level-3 .bg-gradient-to-br', title: '🌡️ AI Temperature Control', text: "Welcome to the Production Floor! Here you'll learn about <strong>AI Temperature</strong> - one of the most important concepts in modern AI. Temperature controls how 'creative' or 'conservative' your AI behaves."},
+        { element: '#l3-temp-display', title: 'Temperature Display', text: "This shows the current factory temperature. In AI terms, <strong>low temperature = stable, predictable behavior</strong> while <strong>high temperature = creative, risky behavior</strong>. Watch how it affects balloon stability!"},
+        { element: '#l3-start-stop-btn', title: '🚀 Start Production', text: "Click this to begin continuous balloon production. Your AI will process balloons forever, but the weather will change every 15-60 seconds, affecting balloon behavior!"},
+        { element: 'body', title: '🌤️ Weather Patterns', text: "Notice the weather effects? <strong>Hot weather = balloons pop easier</strong> (high temperature = risky AI). <strong>Cold weather = balloons more stable</strong> (low temperature = conservative AI). This is exactly how AI temperature works!"},
+        { element: 'body', title: '🎯 Pattern Recognition', text: "As you play, ask yourself: <strong>Do you notice the tendency of balloons to pop more in hot weather?</strong> This is the key insight - temperature directly affects AI behavior and decision-making!"},
+        { element: 'body', title: '🤖 AI Temperature in Real Life', text: "In real AI systems, temperature controls creativity vs stability. <strong>Low temp (0.1-0.3):</strong> Conservative, factual responses. <strong>High temp (0.7-1.0):</strong> Creative, varied responses. Your balloon factory simulates this perfectly!"},
+        { element: 'body', title: '🎮 Your Mission', text: "Adapt your pump settings based on the weather! When it's hot, reduce pumps to avoid losses. When it's cold, increase pumps for higher profits. This teaches you to tune AI temperature for optimal performance!"},
+    ];
 
     // --- Navigation ---
     function goToLevelSelect() {
         showScreen('level-select');
-        if (gameState.unlockedLevels >= 2) {
-            selectL2Btn.disabled = false;
-            document.getElementById('l2-lock').style.display = 'none';
-        }
-        if (gameState.unlockedLevels >= 3) {
-            selectL3Btn.disabled = false;
-            document.getElementById('l3-lock').style.display = 'none';
-        }
     }
 
     function setInsight(text, level) {
@@ -865,7 +1168,7 @@
     function renderL1() {
         const { currentBalloon, currentPumps } = gameState.l1;
         const scale = 1 + currentPumps * 0.08;
-        l1BalloonArea.innerHTML = `<div class="balloon bg-${currentBalloon.colorClass}" style="--scale: ${scale}; transform: scale(${scale}); color: var(--tw-bg-${currentBalloon.colorClass})"><div class="balloon-face"><div class="eye left" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="eye right" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="mouth" style="height: ${Math.min(25, 15 + currentPumps * 1.5)}px; border-radius: 0 0 ${Math.min(25, 15 + currentPumps)}px ${Math.min(25, 15 + currentPumps)}px;"></div></div></div>`;
+        l1BalloonArea.innerHTML = `<div class="balloon bg-${currentBalloon.colorClass}" style="--scale: ${scale}; transform: scale(${scale}); color: var(--tw-bg-${currentBalloon.colorClass})"><div class="balloon-face"><div class="eye left" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="eye right" style="transform: scaleY(${1 + currentPumps * 0.05})"></div><div class="mouth"></div></div><div class="balloon-string"></div></div>`;
         document.getElementById('l1-progress').textContent = `Balloon ${gameState.l1.balloonIndex + 1} of ${L1_SEQUENCE.length}`;
         document.getElementById('l1-current-score').textContent = currentPumps;
         
@@ -993,14 +1296,15 @@
     // =================================
     const l2StartStopBtn = document.getElementById('l2-start-stop-btn');
     const conveyor2 = document.getElementById('l2-conveyor');
+    const l2OpenGameBtn = document.getElementById('l2-open-game-btn');
+    const l2CompletionModal = document.getElementById('l2-completion-modal');
+    const l2ModalCloseBtn = document.getElementById('l2-modal-close');
 
     function startLevel2() {
         showScreen('level-2');
         if (gameState.l2.processedCount >= 100) {
             endLevel2(true);
         } else {
-            document.getElementById('l2-summary-area').style.display = 'none';
-            document.getElementById('l2-start-stop-btn').style.display = 'block';
             buildPerformanceMonitor('l2');
             updateL2Stats();
             displayPastStrategies(); // Show past strategies
@@ -1052,7 +1356,7 @@
             bar.style.width = `${perfPercent}%`;
             // Use balloon colors instead of performance colors
             if (color === 'red') {
-                bar.className = 'performance-bar-inner bg-red-400';
+                bar.className = 'performance-bar-inner bg-red-500';
             } else if (color === 'blue') {
                 bar.className = 'performance-bar-inner bg-blue-400';
             } else if (color === 'green') {
@@ -1087,6 +1391,10 @@
     function resetL2Simulation() {
         // Reset processed count
         gameState.l2.processedCount = 0;
+        
+        // Reset earned amount
+        gameState.l2.totalEarned = 0;
+        document.getElementById('l2-earned-amount').textContent = '0';
         
         // Reset stats
         const statsTemplate = { score: 0, pops: 0, count: 0, pumps: 0 };
@@ -1165,7 +1473,14 @@
         if (!strategiesList || !gameState.l2.pastStrategies) return;
         
         if (gameState.l2.pastStrategies.length === 0) {
-            strategiesList.innerHTML = '<p class="text-center text-indigo-400 text-sm">No past strategies yet</p>';
+            strategiesList.innerHTML = `
+                <div class="bg-indigo-900/20 p-4 rounded-lg border border-indigo-600 min-w-[320px] flex-shrink-0 flex flex-col justify-center" style="min-height: 200px;">
+                    <div class="text-center">
+                        <div class="text-indigo-400 text-sm mb-2">No strategies yet</div>
+                        <div class="text-xs text-indigo-500">Run a test to see your strategies here</div>
+                    </div>
+                </div>
+            `;
             return;
         }
         
@@ -1174,41 +1489,59 @@
             const timeAgo = Math.round((Date.now() - strategy.timestamp) / 1000);
             
             return `
-                <div class="bg-indigo-900/30 p-3 rounded-lg border border-indigo-600">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-bold text-indigo-200">Strategy ${strategyNum}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-indigo-400">${timeAgo}s ago</span>
-                            <button class="delete-strategy-btn text-xs bg-red-500/20 hover:bg-red-500/30 text-red-400 px-2 py-1 rounded transition" data-index="${index}">
-                                Delete
-                            </button>
+                <div class="bg-indigo-900/30 p-4 rounded-lg border border-indigo-600 min-w-[320px] flex-shrink-0">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-sm font-bold text-indigo-200">Strategy ${strategyNum}</span>
+                    <button class="delete-strategy-btn text-xs bg-red-500/20 hover:bg-red-500/30 text-red-400 px-2 py-1 rounded transition" data-index="${index}">
+                        ×
+                    </button>
+                </div>
+                    
+                    <!-- Strategy Settings -->
+                    <div class="mb-3">
+                        <div class="text-xs font-bold text-indigo-300 mb-2">Your Strategy:</div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            ${['red', 'blue', 'green', 'yellow'].map(color => `
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-1">
+                                        <div class="w-2 h-2 rounded-full bg-${color}-400"></div>
+                                        <span class="text-${color}-400 font-bold">${color.toUpperCase()}:</span>
+                                    </div>
+                                    <span class="text-white font-mono">${strategy.strategy[color] || 0} pumps</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
-                    <div class="text-xs text-indigo-300 mb-2">
+                    
+                    <!-- Performance Data by Color -->
+                    <div class="mb-3">
+                        <div class="text-xs font-bold text-indigo-300 mb-2">Pop Rates by Color:</div>
+                        <div class="space-y-1 text-xs">
+                            ${['red', 'blue', 'green', 'yellow'].map(color => `
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-1">
+                                        <div class="w-2 h-2 rounded-full bg-${color}-400"></div>
+                                        <span class="text-${color}-400">${color.toUpperCase()}:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-white">${strategy.performance[color].count} balloons</span>
+                                        <span class="text-red-400 font-bold">${strategy.performance[color].popRate.toFixed(0)}%</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Overall Summary -->
+                    <div class="pt-2 border-t border-indigo-600 text-xs">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-indigo-300">Overall Pop Rate:</span>
+                            <span class="text-red-400 font-bold">${strategy.overallPopRate.toFixed(0)}%</span>
+                        </div>
                         <div class="flex justify-between">
-                            <span>Balloons Processed:</span>
-                            <span class="text-white">${strategy.totalProcessed}</span>
+                            <span class="text-indigo-300">Total Earned:</span>
+                            <span class="text-green-400 font-bold">$${strategy.overallAvgScore * strategy.totalProcessed}</span>
                         </div>
-                    </div>
-                    <div class="space-y-2 text-xs">
-                        ${['red', 'blue', 'green', 'yellow'].map(color => `
-                            <div class="bg-indigo-800/30 p-2 rounded border border-indigo-600">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-${color}-400 font-bold">${color.toUpperCase()}:</span>
-                                    <span class="text-white">${strategy.strategy[color] || 0} pumps</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 text-xs">
-                                    <div class="flex justify-between">
-                                        <span class="text-indigo-300">Avg Score:</span>
-                                        <span class="text-green-400">${strategy.performance[color].avgScore.toFixed(1)}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-indigo-300">Pop Rate:</span>
-                                        <span class="text-red-400">${strategy.performance[color].popRate.toFixed(1)}%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
                     </div>
                 </div>
             `;
@@ -1247,24 +1580,33 @@
         const remaining = 100 - gameState.l2.processedCount;
         for (let i = 0; i < remaining; i++) {
             const color = getL2RandomBalloon();
-            const strategy = gameState.l2.strategy[color];
-            const pumps = Math.min(strategy, BALLOON_CONFIG[color].range[1]);
+            const config = BALLOON_CONFIG[color];
+            const maxPumps = getRandomInt(...config.range);
+            const strategyPumps = gameState.l2.strategy[color];
             
-            // Simulate balloon processing
-            const balloon = { color, pumps, popped: pumps >= BALLOON_CONFIG[color].range[1] };
-            const score = balloon.popped ? 0 : pumps;
+            // Calculate if balloon pops (same logic as normal simulation)
+            let scoreVal = 0;
+            if (strategyPumps > maxPumps) {
+                gameState.l2.stats[color].pops++;
+            } else {
+                scoreVal = strategyPumps;
+                gameState.l2.stats[color].score += scoreVal;
+            }
             
             // Update stats
             gameState.l2.stats[color].count++;
-            gameState.l2.stats[color].pumps += pumps;
-            gameState.l2.stats[color].score += score;
-            if (balloon.popped) gameState.l2.stats[color].pops++;
-            
             gameState.l2.processedCount++;
+            
+            // Update earned amount
+            gameState.l2.totalEarned = (gameState.l2.totalEarned || 0) + scoreVal;
         }
         
         // Update display
         updateL2Stats();
+        document.getElementById('l2-earned-amount').textContent = gameState.l2.totalEarned;
+        
+        // Save the strategy
+        saveL2Strategy();
         
         // Small delay to ensure performance monitor updates are visible
         setTimeout(() => {
@@ -1278,9 +1620,9 @@
         
         if (gameState.l2.isRunning) {
             if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
-            l2StartStopBtn.textContent = 'PAUSE & ADJUST';
+            l2StartStopBtn.textContent = 'FINISH TEST';
             l2StartStopBtn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
-            l2StartStopBtn.classList.add('bg-amber-500', 'hover:bg-amber-600');
+            l2StartStopBtn.classList.add('bg-red-500', 'hover:bg-red-600');
             updateL2Strategy();
             disableL2Sliders();
             resetL2Simulation(); // Reset when starting
@@ -1288,9 +1630,9 @@
             skipBtn.classList.remove('hidden'); // Show skip button
         } else {
             if (gameState.tutorial.l2 < L2_TUTORIAL_STEPS.length) showTutorialStep(L2_TUTORIAL_STEPS, 'l2');
-            l2StartStopBtn.textContent = 'RESUME SIMULATION';
+            l2StartStopBtn.textContent = 'RUN TEST';
             l2StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
-            l2StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            l2StartStopBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
             enableL2Sliders();
             saveL2Strategy(); // Save strategy when pausing
             clearInterval(gameState.l2.interval);
@@ -1310,6 +1652,10 @@
             let scoreVal = 0;
             if (strategyPumps > maxPumps) { gameState.l2.stats[type].pops++; } else { scoreVal = strategyPumps; gameState.l2.stats[type].score += scoreVal; }
             gameState.l2.stats[type].count++; gameState.l2.processedCount++;
+            
+            // Update earned amount
+            gameState.l2.totalEarned = (gameState.l2.totalEarned || 0) + scoreVal;
+            document.getElementById('l2-earned-amount').textContent = gameState.l2.totalEarned;
             const balloonItem = document.createElement('div');
             balloonItem.className = 'absolute top-1/2 left-1/2 conveyor-belt-item';
             const balloonEl = document.createElement('div');
@@ -1317,7 +1663,15 @@
             balloonEl.style.transform = 'scale(0.5)';
             balloonEl.style.color = `var(--tw-bg-${config.color})`;
             balloonItem.appendChild(balloonEl);
-            if (scoreVal === 0) { setTimeout(() => { createExplosion(balloonItem, type); balloonEl.style.display = 'none'; }, 2000); }
+            if (scoreVal === 0) { 
+                setTimeout(() => { 
+                    balloonEl.classList.add('pre-explode');
+                    setTimeout(() => { 
+                        createExplosion(balloonItem, type); 
+                        balloonEl.style.display = 'none'; 
+                    }, 500);
+                }, 1500); 
+            }
             conveyor2.appendChild(balloonItem);
             setTimeout(() => { if (conveyor2.contains(balloonItem)) conveyor2.removeChild(balloonItem); }, 4000);
             updateL2Stats();
@@ -1339,8 +1693,15 @@
             saveGameState();
         }
         updateL2Stats();
-        document.getElementById('l2-summary-area').style.display = 'block';
-        document.getElementById('l2-start-stop-btn').style.display = 'none';
+        
+        // Reset button to RUN TEST state
+        l2StartStopBtn.textContent = 'RUN TEST';
+        l2StartStopBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+        l2StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
+        enableL2Sliders();
+        
+        // Show completion modal instead of summary area
+        l2CompletionModal.classList.remove('hidden');
     }
     
     // =================================
@@ -1355,7 +1716,8 @@
         updateL3Strategy();
         buildPerformanceMonitor('l3');
         updateL3Stats();
-        setInsight("Welcome to the real world! External factors like 'temperature' can affect your model. Adapt on the fly!", 3);
+        updateWeatherDisplay();
+        showTutorialStep(L3_TUTORIAL_STEPS, 'l3');
     }
     
     function setupL3Controls() { ['red', 'blue', 'green', 'yellow'].forEach(color => { const slider = document.getElementById(`l3-${color}-pumps`); const valSpan = document.getElementById(`l3-${color}-val`); slider.addEventListener('input', () => { valSpan.textContent = slider.value; updateL3Strategy(); }); }); }
@@ -1364,19 +1726,231 @@
     function toggleL3Simulation() {
         gameState.l3.isRunning = !gameState.l3.isRunning;
         if (gameState.l3.isRunning) {
-            l3StartStopBtn.textContent = 'PAUSE & ADJUST';
-            l3StartStopBtn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
+            l3StartStopBtn.textContent = '⏸️ PAUSE PRODUCTION';
+            l3StartStopBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
             l3StartStopBtn.classList.add('bg-amber-500', 'hover:bg-amber-600');
             runL3Simulation();
             runL3TempChanges();
         } else {
-            l3StartStopBtn.textContent = 'RESUME SIMULATION';
-            l3StartStopBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
+            l3StartStopBtn.textContent = '🚀 START PRODUCTION';
+            l3StartStopBtn.classList.add('bg-green-500', 'hover:bg-green-600');
             l3StartStopBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
             clearInterval(gameState.l3.interval);
             clearTimeout(gameState.l3.tempInterval);
-            l3TempDisplay.classList.remove('temp-flicker-hot', 'temp-flicker-cold');
+            hideWeatherEffects();
         }
+    }
+    
+    function updateWeatherDisplay() {
+        const temp = gameState.l3.temperature;
+        const weatherIcon = document.getElementById('weather-icon');
+        const weatherStatus = document.getElementById('weather-status');
+        const tempBar = document.getElementById('temp-bar');
+        
+        // Update temperature display
+        l3TempDisplay.textContent = `${temp}°C`;
+        
+        // Update weather icon and status with more dramatic conditions
+        if (temp > 35) {
+            weatherIcon.textContent = '🔥';
+            weatherStatus.textContent = 'EXTREME HEAT - CRITICAL RISK';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-red-600 animate-pulse';
+            tempBar.style.width = '100%';
+            tempBar.className = 'h-full bg-gradient-to-r from-red-500 to-red-700 transition-all duration-1000';
+            showWeatherEffect('extreme-heat');
+        } else if (temp > 30) {
+            weatherIcon.textContent = '🌡️';
+            weatherStatus.textContent = 'Heat Wave - HIGH RISK';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-red-500';
+            tempBar.style.width = '90%';
+            tempBar.className = 'h-full bg-gradient-to-r from-yellow-400 to-red-500 transition-all duration-1000';
+            showWeatherEffect('heat');
+        } else if (temp > 25) {
+            weatherIcon.textContent = '☀️';
+            weatherStatus.textContent = 'Warm - Moderate Risk';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-orange-400';
+            tempBar.style.width = '70%';
+            tempBar.className = 'h-full bg-gradient-to-r from-orange-400 to-red-400 transition-all duration-1000';
+            hideWeatherEffects();
+        } else if (temp < 5) {
+            weatherIcon.textContent = '🧊';
+            weatherStatus.textContent = 'BLIZZARD - EXTREME COLD';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-blue-600 animate-pulse';
+            tempBar.style.width = '10%';
+            tempBar.className = 'h-full bg-gradient-to-r from-blue-600 to-blue-800 transition-all duration-1000';
+            showWeatherEffect('blizzard');
+        } else if (temp < 10) {
+            weatherIcon.textContent = '❄️';
+            weatherStatus.textContent = 'Cold Snap - Low Risk';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-blue-400';
+            tempBar.style.width = '20%';
+            tempBar.className = 'h-full bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-1000';
+            showWeatherEffect('snow');
+        } else if (temp < 15) {
+            weatherIcon.textContent = '⛈️';
+            weatherStatus.textContent = 'Storm - Unstable Conditions';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-purple-400';
+            tempBar.style.width = '30%';
+            tempBar.className = 'h-full bg-gradient-to-r from-purple-400 to-blue-500 transition-all duration-1000';
+            showWeatherEffect('storm');
+        } else if (temp < 20) {
+            weatherIcon.textContent = '🌧️';
+            weatherStatus.textContent = 'Cool - Stable Conditions';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-blue-300';
+            tempBar.style.width = '40%';
+            tempBar.className = 'h-full bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-1000';
+            showWeatherEffect('rain');
+        } else {
+            weatherIcon.textContent = '🌤️';
+            weatherStatus.textContent = 'Perfect Conditions';
+            l3TempDisplay.className = 'text-4xl font-black transition-all duration-1000 mb-2 text-green-400';
+            tempBar.style.width = '50%';
+            tempBar.className = 'h-full bg-gradient-to-r from-green-400 to-blue-400 transition-all duration-1000';
+            hideWeatherEffects();
+        }
+    }
+    
+    function showWeatherEffect(type) {
+        hideWeatherEffects();
+        const container = document.getElementById('weather-effects');
+        let effectDiv;
+        
+        // Determine which effect container to use
+        if (type === 'extreme-heat' || type === 'heat') {
+            effectDiv = document.getElementById('heat-waves');
+        } else if (type === 'blizzard' || type === 'snow') {
+            effectDiv = document.getElementById('snow-flakes');
+        } else if (type === 'storm' || type === 'rain') {
+            effectDiv = document.getElementById('rain-drops');
+        }
+        
+        effectDiv.classList.remove('hidden');
+        
+        if (type === 'rain') {
+            // Light rain
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    drop.className = 'rain-drop';
+                    drop.style.left = Math.random() * 100 + '%';
+                    drop.style.animationDelay = Math.random() * 2 + 's';
+                    effectDiv.appendChild(drop);
+                    setTimeout(() => drop.remove(), 2000);
+                }, i * 60);
+            }
+        } else if (type === 'storm') {
+            // Heavy storm with lightning
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    drop.className = 'rain-drop';
+                    drop.style.left = Math.random() * 100 + '%';
+                    drop.style.animationDelay = Math.random() * 1 + 's';
+                    effectDiv.appendChild(drop);
+                    setTimeout(() => drop.remove(), 1500);
+                }, i * 30);
+            }
+            
+            // Add storm clouds
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const cloud = document.createElement('div');
+                    cloud.className = 'storm-cloud';
+                    cloud.style.top = Math.random() * 20 + '%';
+                    cloud.style.left = Math.random() * 100 + '%';
+                    effectDiv.appendChild(cloud);
+                    setTimeout(() => cloud.remove(), 3000);
+                }, i * 1000);
+            }
+            
+            // Add lightning
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const lightning = document.createElement('div');
+                    lightning.className = 'lightning';
+                    lightning.style.left = Math.random() * 100 + '%';
+                    lightning.style.top = Math.random() * 50 + '%';
+                    effectDiv.appendChild(lightning);
+                    setTimeout(() => lightning.remove(), 100);
+                }, i * 2000);
+            }
+        } else if (type === 'snow') {
+            // Light snow
+            for (let i = 0; i < 25; i++) {
+                setTimeout(() => {
+                    const flake = document.createElement('div');
+                    flake.className = 'snow-flake';
+                    flake.textContent = '❄';
+                    flake.style.left = Math.random() * 100 + '%';
+                    flake.style.animationDelay = Math.random() * 3 + 's';
+                    effectDiv.appendChild(flake);
+                    setTimeout(() => flake.remove(), 4000);
+                }, i * 120);
+            }
+        } else if (type === 'blizzard') {
+            // Heavy blizzard with ice crystals
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const flake = document.createElement('div');
+                    flake.className = 'snow-flake';
+                    flake.textContent = '❄';
+                    flake.style.left = Math.random() * 100 + '%';
+                    flake.style.animationDelay = Math.random() * 2 + 's';
+                    effectDiv.appendChild(flake);
+                    setTimeout(() => flake.remove(), 3000);
+                }, i * 50);
+            }
+            
+            // Add ice crystals
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const crystal = document.createElement('div');
+                    crystal.className = 'ice-crystal';
+                    crystal.style.left = Math.random() * 100 + '%';
+                    crystal.style.animationDelay = Math.random() * 2 + 's';
+                    effectDiv.appendChild(crystal);
+                    setTimeout(() => crystal.remove(), 3000);
+                }, i * 150);
+            }
+        } else if (type === 'heat') {
+            // Moderate heat waves
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const wave = document.createElement('div');
+                    wave.className = 'heat-wave';
+                    wave.style.top = Math.random() * 100 + '%';
+                    wave.style.animationDelay = Math.random() * 2 + 's';
+                    effectDiv.appendChild(wave);
+                    setTimeout(() => wave.remove(), 2000);
+                }, i * 300);
+            }
+        } else if (type === 'extreme-heat') {
+            // Extreme heat with distortion
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const wave = document.createElement('div');
+                    wave.className = 'heat-wave';
+                    wave.style.top = Math.random() * 100 + '%';
+                    wave.style.animationDelay = Math.random() * 1 + 's';
+                    effectDiv.appendChild(wave);
+                    setTimeout(() => wave.remove(), 1500);
+                }, i * 100);
+            }
+            
+            // Add heat distortion overlay
+            const distortion = document.createElement('div');
+            distortion.className = 'heat-distortion';
+            effectDiv.appendChild(distortion);
+        }
+    }
+    
+    function hideWeatherEffects() {
+        document.getElementById('rain-drops').classList.add('hidden');
+        document.getElementById('snow-flakes').classList.add('hidden');
+        document.getElementById('heat-waves').classList.add('hidden');
+        document.getElementById('rain-drops').innerHTML = '';
+        document.getElementById('snow-flakes').innerHTML = '';
+        document.getElementById('heat-waves').innerHTML = '';
     }
     
     function runL3TempChanges() {
@@ -1385,18 +1959,28 @@
             gameState.l3.temperature += change;
             if (gameState.l3.temperature > 40) gameState.l3.temperature = 40;
             if (gameState.l3.temperature < 0) gameState.l3.temperature = 0;
-            l3TempDisplay.textContent = `${gameState.l3.temperature}°C`;
-            l3TempDisplay.classList.remove('text-red-400', 'text-blue-400', 'text-white', 'temp-flicker-hot', 'temp-flicker-cold');
-            if (gameState.l3.temperature > 25) {
-                l3TempDisplay.classList.add('text-red-400', 'temp-flicker-hot');
-                setInsight("It's getting hot! High temperatures increase risk. Consider lowering your pump values.", 3);
+            
+            updateWeatherDisplay();
+            
+            if (gameState.l3.temperature > 35) {
+                setInsight("🔥 CRITICAL ALERT! Extreme heat detected! Balloons are extremely fragile - reduce all pump settings immediately!", 3);
+            } else if (gameState.l3.temperature > 30) {
+                setInsight("🌡️ Heat wave warning! Balloons are more fragile. Consider reducing pump settings to avoid catastrophic losses!", 3);
+            } else if (gameState.l3.temperature > 25) {
+                setInsight("☀️ Warm conditions detected. Balloons are slightly more fragile. Monitor your settings carefully!", 3);
+            } else if (gameState.l3.temperature < 5) {
+                setInsight("🧊 BLIZZARD CONDITIONS! Extreme cold makes balloons ultra-stable. You can maximize pump settings for massive profits!", 3);
+            } else if (gameState.l3.temperature < 10) {
+                setInsight("❄️ Cold snap detected! Balloons are very stable. Increase pump settings for higher profits!", 3);
             } else if (gameState.l3.temperature < 15) {
-                l3TempDisplay.classList.add('text-blue-400', 'temp-flicker-cold');
-                 setInsight("A cold snap! Balloons are more stable. Can you capitalize on this opportunity for more profit?", 3);
+                setInsight("⛈️ Storm conditions! Unstable weather affects balloon behavior. Adjust settings carefully!", 3);
+            } else if (gameState.l3.temperature < 20) {
+                setInsight("🌧️ Cool conditions detected. Balloons are stable. Good time to optimize your strategy!", 3);
             } else {
-                 l3TempDisplay.classList.add('text-white');
+                setInsight("🌤️ Perfect factory conditions! Your AI is performing optimally in ideal weather.", 3);
             }
-            gameState.l3.tempInterval = setTimeout(updateTemp, getRandomInt(3000, 8000));
+            
+            gameState.l3.tempInterval = setTimeout(updateTemp, getRandomInt(15000, 60000));
         };
         updateTemp();
     }
@@ -1415,6 +1999,8 @@
             let scoreVal = 0;
             if (strategyPumps > maxPumps) { gameState.l3.stats[type].pops++; } else { scoreVal = strategyPumps; gameState.l3.stats[type].score += scoreVal; gameState.l3.totalScore += scoreVal; }
             gameState.l3.stats[type].count++;
+            gameState.l3.processedCount = (gameState.l3.processedCount || 0) + 1;
+            document.getElementById('l3-balloons-processed').textContent = gameState.l3.processedCount;
             const balloonItem = document.createElement('div');
             balloonItem.className = 'absolute top-1/2 left-1/2 conveyor-belt-item';
             const balloonEl = document.createElement('div');
@@ -1440,6 +2026,7 @@
         const activeScreenId = document.querySelector('.active-screen').id;
         if (activeScreenId === 'level-1') { gameState.tutorial.l1 = 0; showTutorialStep(L1_TUTORIAL_STEPS, 'l1'); }
         if (activeScreenId === 'level-2') { gameState.tutorial.l2 = 0; showTutorialStep(L2_TUTORIAL_STEPS, 'l2'); }
+        if (activeScreenId === 'level-3') { gameState.tutorial.l3 = 0; showTutorialStep(L3_TUTORIAL_STEPS, 'l3'); }
     });
     startGameBtn.addEventListener('click', goToLevelSelect);
     selectL1Btn.addEventListener('click', startLevel1);
@@ -1450,14 +2037,20 @@
     l1BankBtn.addEventListener('click', handleL1Bank);
     document.getElementById('l1-summary-next-btn').addEventListener('click', startLevel2);
     document.getElementById('l1-summary-replay-btn').addEventListener('click', replayLevel1);
-    document.getElementById('l2-summary-next-btn').addEventListener('click', startLevel3);
-    document.getElementById('l2-summary-replay-btn').addEventListener('click', replayLevel2);
     document.getElementById('prev-slide-btn').addEventListener('click', () => renderEducationalSlides('l1', currentSlideIndex - 1));
     document.getElementById('next-slide-btn').addEventListener('click', () => renderEducationalSlides('l1', currentSlideIndex + 1));
 
     l2StartStopBtn.addEventListener('click', toggleL2Simulation);
     document.getElementById('l2-clear-all-strategies').addEventListener('click', clearAllL2Strategies);
     document.getElementById('l2-skip-to-end-btn').addEventListener('click', skipL2ToEnd);
+    document.getElementById('l2-back-to-learn-btn').addEventListener('click', () => showScreen('level-1'));
+    l2ModalCloseBtn.addEventListener('click', () => {
+        l2CompletionModal.classList.add('hidden');
+    });
+    l2OpenGameBtn.addEventListener('click', () => {
+        startLevel3();
+        l2CompletionModal.classList.add('hidden');
+    });
     setupL2Controls();
     l3StartStopBtn.addEventListener('click', toggleL3Simulation);
     setupL3Controls();
@@ -1487,14 +2080,14 @@
         const activeScreenId = document.querySelector('.active-screen').id;
         if (!activeScreenId.startsWith('level-')) return;
         const levelKey = 'l' + activeScreenId.slice(-1);
-        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : L2_TUTORIAL_STEPS;
+        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : levelKey === 'l2' ? L2_TUTORIAL_STEPS : L3_TUTORIAL_STEPS;
         advanceTutorial(1, steps, levelKey);
     });
     tutorialPrevBtn.addEventListener('click', () => {
         const activeScreenId = document.querySelector('.active-screen').id;
         if (!activeScreenId.startsWith('level-')) return;
         const levelKey = 'l' + activeScreenId.slice(-1);
-        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : L2_TUTORIAL_STEPS;
+        const steps = levelKey === 'l1' ? L1_TUTORIAL_STEPS : levelKey === 'l2' ? L2_TUTORIAL_STEPS : L3_TUTORIAL_STEPS;
         advanceTutorial(-1, steps, levelKey);
     });
     
