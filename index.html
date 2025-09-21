@@ -14,7 +14,7 @@
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: #201370; /* Very Dark Navy Blue */
+            background-color: #12285a !important; /* Dark Navy Blue */
         }
         .screen {
             display: none;
@@ -160,6 +160,79 @@
             border-radius: 9999px;
             transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
+        .animated-title {
+            background: linear-gradient(45deg, #ef4444, #3b82f6, #10b981, #f59e0b, #8b5cf6, #ef4444);
+            background-size: 300% 300%;
+            animation: gradientShift 3s ease-in-out infinite, balloonFloat 3s ease-in-out infinite 0.6s;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        @keyframes balloonFloat {
+            0%, 100% { 
+                transform: translateY(0px);
+            }
+            50% { 
+                transform: translateY(-8px);
+            }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .title-bounce {
+            animation: balloonBurst 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+        @keyframes balloonBurst {
+            0% { 
+                transform: scale(0) rotate(-15deg);
+                opacity: 0;
+            }
+            100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        .subtitle-slide {
+            animation: subtitleSlide 0.6s ease-out 0.3s both;
+        }
+        @keyframes subtitleSlide {
+            0% { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .description-fade {
+            animation: descriptionFade 0.8s ease-out 0.6s both;
+        }
+        @keyframes descriptionFade {
+            0% { 
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .button-pop {
+            animation: buttonPop 0.5s ease-out 0.9s both;
+        }
+        @keyframes buttonPop {
+            0% { 
+                transform: scale(0) rotate(-5deg);
+                opacity: 0;
+            }
+            100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
         #custom-tooltip {
             position: fixed;
             background: #1f2937;
@@ -213,10 +286,10 @@
 
     <!-- Main Menu Screen -->
     <div id="main-menu" class="screen active-screen flex-col justify-center items-center p-4 text-center" style="padding-top: 80px; padding-bottom: 40px;">
-        <h1 class="text-4xl md:text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-blue-400 to-green-400">Pop Logic</h1>
-        <h2 class="text-2xl md:text-3xl font-bold text-indigo-200 mb-6" style="margin-top: 1rem;">An AI Training Game</h2>
-        <p class="max-w-2xl text-indigo-300 mb-8">A game about patterns, predictions, and probability. Can you master the logic before the pop? Learn core AI concepts in a fun, risk-vs-reward challenge.</p>
-        <button id="start-game-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-10 rounded-2xl text-xl shadow-lg transform hover:scale-105">Start Training</button>
+        <h1 id="main-title" class="text-4xl md:text-8xl font-black mb-4 animated-title">Pop Logic</h1>
+        <h2 id="main-subtitle" class="text-2xl md:text-3xl font-bold text-indigo-200 mb-6" style="margin-top: 1rem;">An AI Training Game</h2>
+        <p id="main-description" class="max-w-2xl text-indigo-300 mb-8">A game about patterns, predictions, and probability. Can you master the logic before the pop? Learn core AI concepts in a fun, risk-vs-reward challenge.</p>
+        <button id="start-game-btn" class="btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-10 rounded-2xl text-xl shadow-lg transform hover:scale-105">Start</button>
     </div>
 
     <!-- Level Select Screen -->
@@ -400,6 +473,9 @@
     const tutorialNextBtn = document.getElementById('tutorial-next-btn');
     const customTooltip = document.getElementById('custom-tooltip');
     const skipTutorialBtn = document.getElementById('skip-tutorial-btn');
+    const mainTitle = document.getElementById('main-title');
+    const mainSubtitle = document.getElementById('main-subtitle');
+    const mainDescription = document.getElementById('main-description');
 
 
     // --- Game Config ---
@@ -508,12 +584,49 @@
         }
     }
     
+    // --- Cartoony Title Animations ---
+    function animateTitlePage() {
+        // Reset all elements to initial state
+        mainTitle.style.opacity = '0';
+        mainTitle.style.transform = 'scale(0) rotate(-10deg)';
+        mainSubtitle.style.opacity = '0';
+        mainSubtitle.style.transform = 'translateY(50px)';
+        mainDescription.style.opacity = '0';
+        mainDescription.style.transform = 'translateY(30px)';
+        
+        // Trigger animations with delays
+        setTimeout(() => {
+            mainTitle.classList.add('title-bounce');
+        }, 100);
+        
+        setTimeout(() => {
+            mainSubtitle.classList.add('subtitle-slide');
+        }, 400);
+        
+        setTimeout(() => {
+            mainDescription.classList.add('description-fade');
+        }, 700);
+        
+        // Don't animate the button to avoid interfering with click functionality
+        setTimeout(() => {
+            mainDescription.style.opacity = '1';
+            mainDescription.style.transform = 'translateY(0)';
+        }, 1000);
+    }
+    
     const showScreen = (screenId) => {
         screens.forEach(s => s.classList.remove('active-screen'));
         document.getElementById(screenId).classList.add('active-screen');
         const isLevelScreen = screenId.startsWith('level-');
         homeBtn.style.display = isLevelScreen ? 'block' : 'none';
         helpBtn.style.display = isLevelScreen ? 'block' : 'none';
+        
+        // Trigger title page animation when showing main menu
+        if (screenId === 'main-menu') {
+            setTimeout(() => {
+                animateTitlePage();
+            }, 50);
+        }
     };
 
     // --- Global Banner Update ---
@@ -590,6 +703,10 @@
             // Center the entire popup in the middle of the screen
             boxLeft = (window.innerWidth - boxWidth) / 2;
             boxTop = (window.innerHeight - 450) / 2; // Slightly higher position
+        } else if (step.title === "Build Your AI!") {
+            // Position to the right of the highlighting area
+            boxLeft = rect.right + 20; // 20px to the right of the highlighted element
+            boxTop = rect.top + (rect.height / 2) - 100; // Center vertically with highlighted element
         } else {
             // Default positioning relative to target element
             boxLeft = rect.left + (rect.width / 2) - (boxWidth / 2);
@@ -647,7 +764,7 @@
         { element: 'body', title: 'You are ready to begin!', text: "You've learned the basics! Time to test your knowledge. Good luck!"},
     ];
      const L2_TUTORIAL_STEPS = [
-        { element: '#l2-control-panel', title: 'Build Your AI!', text: "Now you're the teacher. Use the sliders to set rules for your AI based on what you learned in Level 1."},
+        { element: '#l2-control-panel', title: 'Build Your AI!', text: "Now you're the teacher. Use the sliders to set rules for your AI based on what you learned in Level 1. The AI will automatically cash in after this many pumps of each balloon type."},
         { element: '#l2-simulation-panel', title: 'Live Simulation', text: "Your AI will now process 100 balloons based on your rules. Watch the performance monitor to see how it performs."},
         { element: '#l2-start-stop-btn', title: 'Human-in-the-Loop', text: "Things not going well? You can PAUSE the simulation at any time to adjust your AI's rules. This is your role as a Human Supervisor!"},
     ];
@@ -1140,7 +1257,13 @@
     
     // --- Load Game on Startup ---
     initGame();
-    document.addEventListener('DOMContentLoaded', initGame);
+    document.addEventListener('DOMContentLoaded', () => {
+        initGame();
+        // Trigger initial title animation
+        setTimeout(() => {
+            animateTitlePage();
+        }, 200);
+    });
 
 </script>
 </body>
