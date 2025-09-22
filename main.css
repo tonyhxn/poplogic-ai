@@ -110,3 +110,34 @@ body {
     border: 5px solid transparent;
     border-top-color: #1f2937;
 }
+
+/* LinkedIn Footer Styling */
+#linkedin-footer {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+#linkedin-footer a {
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    transition: all 0.2s ease;
+}
+
+#linkedin-footer a:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+    transform: translateY(-1px);
+}
+
+#linkedin-footer svg {
+    transition: transform 0.2s ease;
+}
+
+#linkedin-footer a:hover svg {
+    transform: scale(1.1);
+}
+
+/* Ensure main menu has enough bottom padding to account for footer */
+#main-menu {
+    padding-bottom: 60px; /* Extra padding for LinkedIn footer */
+}
